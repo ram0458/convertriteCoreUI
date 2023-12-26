@@ -1,0 +1,127 @@
+<!--
+ Copyright (c) 2014, 2023, Oracle and/or its affiliates.
+ Licensed under The Universal Permissive License (UPL), Version 1.0
+ as shown at https://oss.oracle.com/licenses/upl/
+ -->
+<div class="oj-hybrid-padding">
+  <oj-messages messages="[[messagesDataProvider]]" display="notification"
+    position="[[riteUTils.positions]]"></oj-messages>
+    <oj-dialog id="hdlCloudMetaData" dialog-title="" aria-describedby="desc">
+      <div slot="header">
+          <div class="oj-flex">
+              <div class="oj-flex-item">
+                  <i class="fa fa-cloud-upload" aria-hidden="true" style="color:#007acc"></i>
+                  <span class="mainPageTitle"> HDL Cloud MetaData</span>
+              </div>
+              <div class="oj-flex-item txtRight">
+                  <span on-click="[[closehdlCloudMetaDataDailog]]" class="txtRight">
+                      <i class="fa fa-times-circle-o" style="color:red;font-size:20px;"></i>
+                  </span>
+              </div>
+          </div>
+      </div>
+      <div slot="body">
+          <oj-defer>
+              <div class="oj-flex">
+                  <div class="oj-flex-item oj-md-2"></div>
+                  <div class="oj-flex-item oj-md-8">
+                      <oj-form-layout max-columns="1" label-edge="top" direction="row">
+                        <oj-file-picker id="pickme" on-oj-select='[[selectListenerUpload]]' >
+                        </oj-file-picker> 
+        
+                      </div>
+                  </div>
+                  <div class="oj-flex-item oj-md-2"></div>
+              </div>
+          </oj-defer>
+      </div>
+  </oj-dialog>
+
+  <div class="oj-flex">
+    <div class="oj-flex-item oj-sm-9"></div>
+    <div class="oj-flex-item oj-sm-1">
+
+      <oj-button class="demo-button-blue" chroming="solid" on-oj-action="[[resetSrcCldTemplate]]">
+        <i class="fa fa-plus"></i>
+      </oj-button>
+    </div>
+    <div class="oj-flex-item oj-sm-2"></div>
+  </div>
+
+
+  <div class="oj-flex">
+    <div class="oj-flex-item oj-sm-2"></div>
+    <div class="oj-flex-item oj-sm-8">
+      <div class="oj-flex">
+        <div class="oj-flex-item oj-md-6 oj-sm-12">
+          <oj-validation-group id="tracker" valid="{{groupValid}}">
+            <oj-form-layout max-columns="2" label-edge="top" direction="row">
+
+              <oj-select-single label-hint="[[riteUTils.riteLbl.projectName]]" data="[[projectNamedata]]"
+                placeholder="[[riteUTils.riteLbl.projectName]]" value="{{projectName}}"
+                on-value-changed="[[projectNameValueChange]]" required>
+              </oj-select-single>
+
+              <oj-select-single required label-hint="[[riteUTils.riteLbl.parentObject]]" data="[[parentobjectdata]]"
+                value="{{parentObject}}" placeholder="[[riteUTils.riteLbl.parentObject]]"
+                on-value-changed="[[pobjCodeValueChange]]">
+              </oj-select-single>
+
+              <oj-select-single label-hint="[[riteUTils.riteLbl.objectCode]]"
+                placeholder="[[riteUTils.riteLbl.objectCode]]" required data="[[objectdata]]" value="{{object}}"
+                on-value-changed="[[objectValueChange]]">
+              </oj-select-single>
+
+              <oj-bind-if test='[[typelabel()=="Cloud"]]'>
+                <oj-input-text placeholder="[[riteUTils.riteLbl.reqForFbdi]]"
+                  label-hint="[[riteUTils.riteLbl.metaDataTableName]]" value="{{metaDataTableName}}"></oj-input-text>
+              </oj-bind-if>
+
+            </oj-form-layout>
+          </oj-validation-group>
+        </div>
+
+        <div class="oj-flex-item oj-md-6 oj-sm-12" style="padding:30px;">
+          <oj-file-picker id="pickme" on-oj-select="[[fileUploadForSave]]" primary-text="Upload File" disabled="[[uploadDisabled]]">
+          </oj-file-picker>
+          <div style="font-size:12px"><span style="color:red;font-weight: bold;">*</span> Table Name must be Unique</div>
+          <div style="font-size:12px;text-align: justify;"><span style="color:red;font-weight: bold;">*</span> Column Name should not repeat and Column Name should not have 
+            <span></span>any Space or Special Characters except underscore ( _ )</div>
+        </div>
+        
+      </div>
+
+
+
+    </div>
+    <div class="oj-flex-item oj-sm-2"></div>
+  </div>
+  <div class="oj-flex btnmargin">
+    <div class="oj-flex-item txtCenter">
+      <oj-bind-if test='[[typelabel()=="Source"]]'>
+        <oj-button class="demo-button-blue"  chroming="solid"
+          on-oj-action="[[downloadSourceTemplate]]">
+          <i class="fa fa-cloud-download"></i> Download Template
+        </oj-button>
+      </oj-bind-if>
+      <oj-bind-if test='[[typelabel()=="Cloud"]]'>
+        <oj-button class="demo-button-blue" chroming="solid"
+          on-oj-action="[[downloadSourceTemplate]]">
+          <i class="fa fa-cloud-download"></i> Download Template
+        </oj-button>
+      </oj-bind-if>
+      <oj-bind-if test='[[typelabel()=="Cloud"]]'>
+        <oj-button class="demo-button-blue" chroming="solid" on-oj-action="[[hdlCloudMetadata]]">
+          <i class="fa fa-cloud-upload"></i> HDL Cloud MetaData
+        </oj-button>
+      </oj-bind-if>
+      <oj-bind-if test='[[typelabel()=="Cloud"]]'>
+        <oj-button class="demo-button-blue" chroming="solid" on-oj-action="[[fbdiCloudMetadata]]"
+          disabled="[[fbdiDisabled]]">
+          <i class="fa fa-cloud-upload"></i> FBDI Cloud MetaData
+        </oj-button>
+      </oj-bind-if>
+    </div>
+  </div>
+
+</div>

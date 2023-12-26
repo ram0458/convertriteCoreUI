@@ -1,0 +1,127 @@
+<!--
+ Copyright (c) 2014, 2023, Oracle and/or its affiliates.
+ Licensed under The Universal Permissive License (UPL), Version 1.0
+ as shown at https://oss.oracle.com/licenses/upl/
+ -->
+<div class="oj-hybrid-padding">
+  <oj-messages messages="[[messagesDataProvider]]" display="notification"
+    position="[[riteUTils.positions]]"></oj-messages>
+    <span id="popupWrapper">
+      <oj-popup id="popup1" auto-dismiss="focusLoss" modality="modeless"
+  style="width:300px;border-radius: 10px;" 
+      position.at.horizontal="center" position.at.vertical="bottom"
+      position.my.horizontal="center" position.my.vertical="top"
+      tail="simple" >
+          <span class="blink-rainbow">
+              <oj-text-area value="{{url}}" label-edge="inside" rows="4" label-hint="[[riteUTils.riteLbl.url]]"  required></oj-text-area>
+          </span>
+      </oj-popup>
+</span>
+
+  <div class="oj-flex">
+    <div class="oj-flex-item oj-sm-4">
+      <span class="mainPageTitle">
+        <i class="fa fa-superpowers filter" ></i>
+         POD Details</span>
+    </div>
+    <div class="oj-flex-item oj-sm-4">
+    </div>
+    <div class="oj-flex-item oj-sm-4 txtRight">
+      <span class="brdcrmbs"> ConvertRite > Cloud Configuration > POD Details</span>
+    </div>
+  </div>
+  <hr>
+  <div style="margin-bottom:20px"></div>
+  <div class="oj-flex">
+    <div class="oj-flex-item oj-md-2 oj-sm-12"></div>
+
+    <div class=" oj-flex-item oj-md-2 oj-sm-12 oj-sm-padding-2x-horizontal">
+      <div class="podtile oj-panel oj-panel-shadow-xs oj-sm-margin-2x">
+        <div class="dstile">POD Name</div>
+        <div class="poddshead">
+           <i class="fa fa-superpowers filter" aria-hidden="true"></i>
+           <oj-bind-text value="[[podName]]"></oj-bind-text>
+        </div>
+      </div>
+    </div>
+    <div class=" oj-flex-item oj-md-2 oj-sm-12 oj-sm-padding-2x-horizontal">
+      <div class="podtile  oj-panel oj-panel-shadow-xs oj-sm-margin-2x">
+        <div class="dstile">Database User</div>
+        <div class="poddshead">
+          <i class="fa fa-database filter" aria-hidden="true"></i>
+          <oj-bind-text value="[[podDbUserName]]"></oj-bind-text>
+
+       </div>
+      </div>
+    </div>
+    <div class="oj-flex-item oj-md-2 oj-sm-12 oj-sm-padding-2x-horizontal">
+      <div class="oj-panel oj-panel-shadow-xs oj-sm-margin-2x podtile">
+        <div class="dstile">Table Space</div>
+        <div class="poddshead">
+          <i class="fa fa fa-hdd-o filter" aria-hidden="true"></i>
+          <oj-bind-text value="[[tableSpace]]"></oj-bind-text>
+       </div>
+      </div>
+    </div>
+
+    <div class="oj-flex-item oj-md-2 oj-sm-12 oj-sm-padding-2x-horizontal">
+      <div class="oj-panel oj-panel-shadow-xs oj-sm-margin-2x podtile">
+        <div class="dstile">Database Url</div>
+        <div class="poddshead">          
+          <span class="dcircle"><i  id="urlPopup" class="fa fa-link filter" aria-hidden="true"  on-mouseover="[[urlOpen]]"></i></span>
+
+        </div>
+      </div>
+    </div>
+    <div class="oj-flex-item oj-md-2 oj-sm-12"></div>
+
+    
+    
+  </div>
+  
+
+  <div class="oj-flex">
+    <div class="oj-flex-item oj-sm-2 oj-sm-only-hide"></div>
+    <div class="oj-flex-item oj-md-8 oj-sm-12">
+      <div id="license" style="width: 1px; min-width: 100%;overflow: auto;margin-top:30px;">
+        <oj-table id="table" aria-label="license Table" data="[[dataprovider]]"
+          style="width:100%;height: auto;max-height:280px;" scroll-position="{{scrollPos}}"
+          dnd='{"reorder": {"columns": "enabled"}}' scroll-policy="loadMoreOnScroll"
+          scroll-policy-options='{"fetchSize": 20}' columns='[
+                     {"headerText": "S.No.", 
+                         "field": "SNo.",
+                         "headerClassName": "oj-sm-only-hide",
+                         "className": "oj-sm-only-hide",
+                         "resizable": "enabled",
+                         "id": "sno"},
+                        
+
+                        {"headerText": "Module Name", 
+                         "field": "moduleName",                       
+                         "resizable": "enabled",
+                         "id": "moduleName"},
+
+                         {"headerText": "User Name", 
+                         "field": "userName",   
+                         "headerClassName": "oj-sm-only-hide",
+                         "className": "oj-sm-only-hide",                      
+                         "resizable": "enabled",
+                         "id": "userName"},
+
+                        {"headerText": "Password", 
+                         "field": "password",                        
+                         "resizable": "enabled",
+                         "id": "password"}                         
+
+                      
+                         ]' class="demo-table-container">
+        </oj-table>
+        <div class="txtCenter">
+          <div><i class="fa fa-angle-down" aria-hidden="true"></i></div>
+          <div class="head31" on-click="[[loadMore]]">Load More</div>
+        </div>
+      </div>
+    </div>
+    <div class="oj-flex-item oj-sm-2 oj-sm-only-hide"></div>
+  </div>
+</div>

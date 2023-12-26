@@ -1,0 +1,205 @@
+<!--
+ Copyright (c) 2014, 2023, Oracle and/or its affiliates.
+ Licensed under The Universal Permissive License (UPL), Version 1.0
+ as shown at https://oss.oracle.com/licenses/upl/
+ -->
+<div class="oj-hybrid-padding">
+    <oj-messages messages="[[messagesDataProvider]]" display="notification"
+        position="[[riteUTils.positions]]"></oj-messages>
+        <div class="oj-flex">
+            <div class="oj-flex-item oj-sm-1"></div>
+            <div class="oj-flex-item oj-sm-9">
+    
+            </div>
+            <div class="oj-flex-item oj-sm-1 txtRight">
+                    <oj-button class="demo-button-blue" chroming="solid" on-oj-action="[[resetConversions]]">
+                    <i class="fa fa-plus"></i>
+                </oj-button>
+            </div>
+        </div>
+
+    <div class="oj-flex">
+        <div class="oj-flex-item oj-sm-1"></div>
+        <div class="oj-flex-item oj-sm-10">
+            <oj-validation-group id="tracker" valid="{{groupValid}}">
+                <oj-form-layout max-columns="5" label-edge="top" direction="row">
+                <oj-select-single required label-hint="[[riteUTils.riteLbl.cldTemplate]]" 
+                data="[[templateData]]"
+                 value="{{selecttemp}}" placeholder="[[riteUTils.riteLbl.cldTemplate]]"
+                 on-value-changed="[[templateChange]]">
+                 </oj-select-single>
+                 <oj-select-single required label-hint="[[riteUTils.riteLbl.batchName]]" data="[[batchNameData]]"
+                 value="{{batchName}}" placeholder="[[riteUTils.riteLbl.batchName]]">
+               </oj-select-single>
+   
+                   <!-- <oj-input-text class="inputbox"
+                    label-hint="[[riteUTils.riteLbl.batchName]]" required value="{{batchName}}"></oj-input-text> -->
+                    <oj-bind-if test='[[typelabel()=="FBDI"]]'>
+                    <oj-input-text class="inputbox" label-hint="[[riteUTils.riteLbl.parameters]]"
+                    placeholder="[[riteUTils.riteLbl.parameters]]"  value="{{parameterList}}" >
+                    </oj-input-text>
+                </oj-input-text>
+                </oj-form-layout>
+            </oj-validation-group>
+
+        </div>
+        <div class="oj-flex-item oj-sm-1"></div>
+    </div>
+
+
+    <div class="oj-flex btnmargin">
+        <div class="oj-flex-item oj-sm-1"></div>
+        <div class="oj-flex-item oj-sm-10 txtCenter">
+            <oj-button class="demo-button-blue" on-oj-action="[[transofrm]]"  chroming="solid">
+                <i class="fa fa-exchange"></i> Transform
+            </oj-button>
+
+            <oj-button class="demo-button-blue" on-oj-action="[[refresh]]"  chroming="solid">
+                <i class="fa fa-refresh"></i> Refresh
+            </oj-button>
+            <oj-bind-if test='[[typelabel()=="FBDI"]]'>
+            <oj-button class="demo-button-blue" on-oj-action="[[downloadFbdi]]"  chroming="solid">
+                <i class="fa fa-download"></i> FBDI
+            </oj-button>
+            </oj-bind-if>
+            <oj-bind-if test='[[typelabel()=="HDL"]]'>
+                <oj-button class="demo-button-blue" on-oj-action="[[downloadHdl]]" chroming="solid">
+                    <i class="fa fa-download"></i> HDL
+                </oj-button>
+            </oj-bind-if>
+           
+                <oj-button class="demo-button-blue" on-oj-action="[[exportCloud]]"  disabled ="[[exportCloudDisabled]]" chroming="solid">
+                    <i class="fa fa-upload"></i> Export Cloud
+                </oj-button>
+          
+        </div>
+        <div class="oj-flex-item oj-sm-1"></div>
+    </div>
+
+
+
+
+    <div class="oj-flex">
+        <div class="oj-flex-item oj-sm-1 oj-sm-only-hide"></div>
+        <div class="oj-flex-item oj-md-10 oj-sm-12">
+            <div class="txtRight">
+                <oj-input-text style="width:15vw;margin:5px;" placeholder="[[riteUTils.riteLbl.search]]"
+                    on-raw-value-changed="[[searchanyvalueChanged]]" id="topsrch" value='{{srchfilter}}'>
+                    <div slot="start" class="oj-text-field-start-end-icon fa fa-search" role="img"></div>
+                </oj-input-text>
+            </div>
+        </div>
+        <div class="oj-flex-item oj-sm-1 oj-sm-only-hide"></div>
+    </div>
+
+
+
+    <div class="oj-flex">
+        <div class="oj-flex-item oj-sm-1 oj-sm-only-hide"></div>
+        <div class="oj-flex-item oj-md-10 oj-sm-12">
+            <div id="clientAdmin" style="width: 1px; min-width: 100%;overflow-x: hidden;">
+                <oj-table id="table" aria-label="license Table" data="[[searchdataprovider]]"
+                    style="width:100%;height:300px;" scroll-position="{{scrollPos}}"
+                    selection-mode='{"row": "single", "column": "single"}' dnd='{"reorder": {"columns": "enabled"}}'
+                    scroll-policy="loadMoreOnScroll" scroll-policy-options='{"fetchSize": 20}' columns='[
+                      {"headerText": "S.No.", 
+                       "field": "SNo",
+                       "headerClassName": "oj-sm-only-hide",
+                       "className": "oj-sm-only-hide",
+                       "resizable": "enabled",
+                       "id": "sno"},
+                      {"headerText": "Template Name", 
+                       "field": "templateName",
+                       "resizable": "enabled",
+                       "id": "templatname"},
+
+                       {"headerText": "Parent Object", 
+                       "field": "parentObjectCode",
+                       "headerClassName": "oj-md-down-hide",
+                       "className": "oj-md-down-hide",
+                       "resizable": "enabled",
+                       "id": "parentobject"},
+
+                      {"headerText": "Request Type", 
+                       "field": "requestType",
+                       "headerClassName": "oj-sm-only-hide",
+                       "className": "oj-sm-only-hide",
+                       "resizable": "enabled",
+                       "id": "reqtype"},
+                      
+                      {"headerText": "Status", 
+                       "field": "status",
+                       "headerClassName": "oj-md-down-hide",
+                       "className": "oj-md-down-hide",
+                       "resizable": "enabled",
+                       "id": "status",
+                        "template":"status"},
+
+                       {"headerText": "Total", 
+                       "field": "totalRecords",
+                       "headerClassName": "oj-md-down-hide",
+                       "className": "oj-md-down-hide",
+                       "resizable": "enabled",
+                       "id": "totrecords"},
+
+                       {"headerText": "Completed %", 
+                       "field": "percentage",
+                       "headerClassName": "oj-md-down-hide",
+                       "className": "oj-md-down-hide",
+                       "resizable": "enabled",
+                       "id": "percentage"},    
+
+                       {"headerText": "Processed", 
+                       "field": "successRec",
+                       "headerClassName": "oj-md-down-hide",
+                       "className": "oj-md-down-hide",
+                       "resizable": "enabled",
+                       "id": "successRec"}, 
+
+                       {"headerText": "Failed", 
+                       "field": "failRec",
+                       "headerClassName": "oj-md-down-hide",
+                       "className": "oj-md-down-hide",
+                       "resizable": "enabled",
+                       "id": "Failed"} 
+                     
+                      
+                     
+                       ]' class="demo-table-container">
+
+                    <template slot="action" data-oj-as="cell">
+                        <span class="edtbtn" on-click="[[editObjectConfig]]">
+                            <span class="hide"><oj-bind-text value="[[cell.data]]"></oj-bind-text></span>
+                            <img :src="[['css/images/ritee.png']]" style="width:15px;height:15px;">
+                        </span>
+
+                    </template>
+
+                    <template slot="status" data-oj-as="cell">
+                        <div style="padding-left: 8px;">
+                            <oj-bind-if test='[[cell.data=="C"]]'>
+                                <span class="fa fa-check fa-lg" role="img" aria-label="error"
+                                    style="color: Green;"></span>
+                            </oj-bind-if>
+                            <oj-bind-if test='[[cell.data=="I"]]'>
+                                <span class="fa fa-hourglass-half fa-lg" role="img" aria-label="error"
+                                    style="color: orange;"></span>
+                            </oj-bind-if>
+                            <oj-bind-if test='[[cell.data=="CE"]]'>
+                                <span class="fa fa-times fa-lg" role="img" aria-label="error"
+                                    style="color: red;"></span>
+                            </oj-bind-if>
+                        </div>
+                    </template>
+
+                </oj-table>
+
+                <div class="txtCenter">
+                    <div><i class="fa fa-angle-down" style="color:black" aria-hidden="true"></i></div>
+                    <div class="head31" on-click="[[loadMore]]">Load More</div>
+                </div>
+            </div>
+        </div>
+        <div class="oj-flex-item oj-sm-1 oj-sm-only-hide"></div>
+    </div>
+</div>

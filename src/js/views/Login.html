@@ -1,0 +1,70 @@
+<!--
+ Copyright (c) 2014, 2023, Oracle and/or its affiliates.
+ Licensed under The Universal Permissive License (UPL), Version 1.0
+ as shown at https://oss.oracle.com/licenses/upl/
+ -->
+<div class="oj-hybrid-padding">
+    <oj-messages messages="[[messagesDataProvider]]" display="notification"
+    position="[[riteUTils.positions]]"></oj-messages>
+    <div class="oj-flex">
+        <div class="oj-flex-item oj-md-4 oj-sm-12"></div>
+        <div class="oj-flex-item oj-md-4 oj-sm-12">
+            <div class="centered">
+                <div class="lgcricle" style="text-align:center;">
+                    <img style="height:35px;width:95px;margin-top:50px;" :src="[[img()]]" >
+                </div>
+                <div class="lgbox">
+                    <div class="txtTitle">
+                        <oj-bind-if test="[[!isLogin()]]">
+                            <oj-form-layout id="lgnform" max-columns="1" label-edge="top" direction="row">
+                                <oj-bind-if test="[[!isPassword()]]">
+                                    <oj-input-text class="inputbox" style="width:220px" label-hint="[[riteUTils.riteLbl.email]]"
+                                        value="{{email}}"></oj-input-text>
+                                </oj-bind-if>
+                                <oj-bind-if test="[[isPassword()]]">
+                                    <oj-input-password class="inputbox" style="width:220px" label-hint="[[riteUTils.riteLbl.password]]"
+                                        value="{{password}}"></oj-input-password>
+                                </oj-bind-if>
+                           </oj-form-layout>
+                        </oj-bind-if>
+                       
+                    </div>
+                    <div class="txtTitle1">
+                        <oj-bind-if test="[[isLogin()]]">
+                            Select POD
+                        </oj-bind-if>
+                    </div>
+                    <div class="txtsub">                        
+                        <oj-bind-if test="[[isLogin()]]">
+                            <oj-bind-for-each data="[[podsData]]">
+                                <template>
+                                    <span on-click="[[showHomePage]]" style="margin:10px;cursor: pointer;">
+                                        <i class="fa fa-database lgnfa" aria-hidden="true"></i>
+                                        <oj-bind-text value="[[$current.data.label]]"></oj-bind-text>
+                                    </span>
+                                </template>
+                            </oj-bind-for-each>
+                        </oj-bind-if>
+                    </div>
+                </div>
+                <div class="logtxt">
+                    <oj-bind-if test="[[!isLogin()]]">
+                    <i class="fa fa-sign-in" aria-hidden="true"></i> Login
+                    </oj-bind-if>
+                    <oj-bind-if test="[[isLogin()]]">
+                        <i class="fa fa-sign-out" aria-hidden="true"></i> LogOut
+                    </oj-bind-if>
+                </div>
+                <oj-bind-if test="[[!isLogin()]]">
+                <div class="whiteball" on-click="[[login]]">
+                </div>
+                </oj-bind-if>
+                <oj-bind-if test="[[isLogin()]]">
+                    <div class="whiteball" onclick="signOut()">
+                    </div>
+                </oj-bind-if>
+            </div>
+        </div>
+        <div class="oj-flex-item oj-md-4 oj-sm-12"></div>
+    </div>
+</div>

@@ -1,0 +1,424 @@
+<!--
+ Copyright (c) 2014, 2023, Oracle and/or its affiliates.
+ Licensed under The Universal Permissive License (UPL), Version 1.0
+ as shown at https://oss.oracle.com/licenses/upl/
+ -->
+<div class="oj-hybrid-padding">
+    <oj-messages messages="[[messagesDataProvider]]" display="notification"
+        position="[[riteUTils.positions]]"></oj-messages>
+    <div id="srch">
+        <oj-dialog id="srchDailog" dialog-title="" aria-describedby="desc">
+            <div slot="header" class="txtRight">
+                <span on-click="[[closeSrchDailog]]">
+                    <i class="fa fa-times-circle-o" style="color:red;font-size:20px;"></i>
+                </span>
+            </div>
+            <div slot="body">
+                <oj-defer>
+                    <div class="oj-flex">
+                        <div class="oj-flex-item oj-md-8">
+                            <span class="mainPageTitle">
+                                <i class="fa fa-empire filter" aria-hidden="true"></i>Search Mapping Sets</span>
+                            
+                            </div>
+                        <div class="oj-flex-item oj-md-4 txtRight">
+                            <oj-input-text style="width:15vw;margin:3px;"  on-raw-value-changed="[[srchvalueChanged]]" id="filter" value='{{srchfilter}}'>
+                                <div slot="start" class="oj-text-field-start-end-icon fa fa-search" role="img"></div>
+                            </oj-input-text>
+                        </div>
+                    </div>
+                    <div class="oj-flex oj-sm-12">
+                        <oj-table id="table" aria-label="src table" data="[[searchdataprovider]]" layout="fixed"
+                            on-selection-changed='{{selectionListener}}' selection-mode='{"row": "single"}'
+                            style="width:100%;height:350px;" scroll-policy="loadMoreOnScroll" columns='[    
+                            {"headerText": "S.No.", 
+                            "field": "rowid","width":"100px",
+                            "resizable": "enabled",
+                            "id": "rowid"},                     
+                                {"headerText": "Mapping Name", 
+                                 "field": "mapSetName",
+                                 "resizable": "enabled",
+                                 "id": "mapSetName"}, 
+    
+                                 {"headerText": "Mapping Code", 
+                                 "field": "mapSetCode",
+                                 "resizable": "enabled",
+                                 "id": "mapSetCode"},
+    
+                                 {"headerText": "Mapping Type", 
+                                 "field": "mapSetType",
+                                 "resizable": "enabled",
+                                 "id": "mapSetType"},
+    
+                                 {"headerText": "Validation Type", 
+                                 "field": "validationType",
+                                 "resizable": "enabled",
+                                 "id": "validationType"}
+    
+                                 
+    
+    
+                                 ]' class="demo-table-container"></oj-table>
+                    </div>
+                </oj-defer>
+            </div>
+        </oj-dialog>
+        <oj-dialog id="sqlDailog" dialog-title="" aria-describedby="desc">
+            <div slot="header" class="txtRight">
+                <span on-click="[[closeSqlDailog]]">
+                    <i class="fa fa-times-circle-o" style="color:red;font-size:20px;"></i>
+                </span>
+            </div>
+            <div slot="body">
+                <oj-defer>
+                    <div class="oj-flex oj-sm-12">
+                        <oj-text-area value="{{sqlQuery}}" rows="15" label-hint="Sql Query"></oj-text-area>
+                    </div>
+                </oj-defer>
+            </div>
+        </oj-dialog>
+        <oj-dialog id="confirmDailog" dialog-title="" aria-describedby="desc">
+            <div slot="header" class="txtRight">
+                <span on-click="[[closeSqlDailog]]">
+                    <i class="fa fa-times-circle-o" style="color:red;font-size:20px;"></i>
+                </span>
+            </div>
+            <div slot="body">
+                
+                    <div class="oj-sm-12">
+                        <div>
+                            <span class="pageTitle">
+                                <i class="fa fa-empire filter" aria-hidden="true"></i>Conformation</span>
+                        </div>
+                        <div style="padding:10px">
+                            Are you sure you want to delete ?
+                        </div>
+                        
+                            <div class="txtRight">
+                                <oj-button class="demo-button-blue" on-oj-action="[[okDeleteConformation]]" chroming="solid">
+                                    Ok
+                                </oj-button>
+                                <oj-button class="demo-button-blue" on-oj-action="[[cancelDelete]]" chroming="solid">
+                                   Cancel
+                                </oj-button>
+                            </div> 
+                        
+                    </div>
+                
+            </div>
+        </oj-dialog>
+
+    </div>
+    <div class="oj-flex">
+        <div class="oj-flex-item oj-sm-4">
+            <span class="mainPageTitle">
+                <i class="fa fa-empire filter" aria-hidden="true"></i> Mapping Sets</span>
+        </div>
+        <div class="oj-flex-item oj-sm-4">
+
+        </div>
+        <div class="oj-flex-item oj-sm-4 txtRight oj-sm-only-hide">
+            <span class="brdcrmbs"> ConvertRite > Setup > Data Transformation > Mapping Sets</span>
+        </div>
+    </div>
+    <hr>
+    <div class="oj-flex">
+        <div class="oj-flex-item oj-sm-1"></div>
+        <div class="oj-flex-item oj-sm-8">
+
+        </div>
+        <div class="oj-flex-item oj-md-2 oj-sm-3 txtRight">
+            <oj-button class="demo-button-blue" on-oj-action="[[showSrchDailog]]" chroming="solid">
+                <i class="fa fa-search"></i>
+            </oj-button>
+            <oj-button class="demo-button-blue" on-oj-action="[[restMappingSets]]" chroming="solid">
+                <i class="fa fa-plus"></i>
+            </oj-button>
+        </div>
+
+    </div>
+    <div class="oj-flex">
+        <div class="oj-flex-item oj-sm-1"></div>
+        <div class="oj-flex-item oj-sm-10">
+            <oj-validation-group id="tracker" valid="{{groupValid}}">
+                <oj-form-layout max-columns="5" label-edge="top" direction="row">
+
+                    <oj-input-text value="{{mappingname}}" label-hint="[[riteUTils.riteLbl.mappingName]]"
+                     placeholder="[[riteUTils.riteLbl.mappingName]]" required></oj-input-text>
+
+                    <oj-input-text value="{{mappingCode}}" label-hint="[[riteUTils.riteLbl.mappingCode]]"
+                    disabled="[[templateid()!=='0']]" :class="[[templateid()!== '0'?'disable':'']]"
+                        placeholder="[[riteUTils.riteLbl.mappingCode]]" required></oj-input-text>
+
+                        <!-- <oj-bind-if test='[[templateid() == "0"]]'> -->
+                            <oj-select-single required label-hint="[[riteUTils.riteLbl.mappingType]]" data="[[mappingData]]"
+                                value="{{mappingType}}" placeholder="[[riteUTils.riteLbl.mappingType]]"
+                                on-value-changed="[[mappingTypeChange]]">
+                            </oj-select-single>
+                        <!-- </oj-bind-if> -->
+                        
+                    <!-- <oj-bind-if test='[[templateid() !== "0"]]'>
+                        <oj-input-text class="inputbox disable" disabled="true"
+                            label-hint="[[riteUTils.riteLbl.mappingType]]" value="{{mappingType}}"></oj-input-text>
+                    </oj-bind-if> -->
+                    <!-- <oj-bind-if test='[[templateid() == "0"]]'> -->
+                    <oj-select-single required label-hint="[[riteUTils.riteLbl.validationType]]"
+                        data="[[validationData]]" value="{{validationType}}"
+                        placeholder="[[riteUTils.riteLbl.validationType]]" on-value-changed="[[validationTypeChange]]">
+                    </oj-select-single>
+                <!-- </oj-bind-if> -->
+
+
+                <!-- <oj-bind-if test='[[templateid() !== "0"]]'>
+                    <oj-input-text class="inputbox disable" disabled="true"
+                        label-hint="[[riteUTils.riteLbl.validationType]]" value="{{validationType}}"></oj-input-text>
+                </oj-bind-if> -->
+
+                    <oj-bind-if test='[[validationType() == "Lookup Value"]]'>
+                        <div style="margin-top:25px;">
+                            <!-- <oj-bind-if test='[[templateid() == "0"]]'> -->
+                            <oj-input-search id="LookType" suggestions="[[lookupsDb]]" required value="{{lookupValue}}"
+                                label-hint="[[riteUTils.riteLbl.validationType]]"
+                                on-oj-value-action="[[lookupValueChange]]" placeholder="Lookup Type..."
+                                aria-label="My search field"></oj-input-search>
+                            <!-- </oj-bind-if> -->
+                            <!-- <oj-bind-if test='[[templateid() !== "0"]]'>
+                                <oj-input-text class="inputbox disable" disabled="true"
+                                    label-hint="[[riteUTils.riteLbl.validationType]]" value="{{lookupValue}}"></oj-input-text>
+                            </oj-bind-if> -->
+                        </div>
+                    </oj-bind-if>
+                    <oj-bind-if test='[[validationType() == "SQL Query"]]'>
+                        <div style="margin-top:25px;text-align: center;color:#007acc;font-weight:500;font-size:13px;"
+                            on-click="[[openSqlDailog]]">
+                            <i class="fa fa-plus-circle" style="color:#007acc" aria-hidden="true"></i> Sql Query <img
+                                src="css/images/favicon.ico" style="vertical-align: middle;">
+                        </div>
+                    </oj-bind-if>
+                </oj-form-layout>
+            </oj-validation-group>
+
+        </div>
+        <div class="oj-flex-item oj-sm-1"></div>
+    </div>
+
+
+    <div class="oj-flex btnmargin">
+        <div class="oj-flex-item oj-sm-1"></div>
+        <div class="oj-flex-item oj-sm-10 txtCenter">
+            <oj-bind-if test="[[btnLbl()=='Save']]">
+                <oj-button class="demo-button-blue" on-oj-action="[[saveMappings]]" chroming="solid">
+                  <i class="fa fa-save"></i> Save
+                </oj-button>
+              </oj-bind-if>
+              <oj-bind-if test="[[btnLbl()=='Update']]">
+                <oj-button class="demo-button-blue" on-oj-action="[[saveMappings]]" chroming="solid">
+                  <i class="fa fa-save"></i> Update
+                </oj-button>
+              </oj-bind-if>
+
+            <!-- <oj-button class="demo-button-blue" on-oj-action="[[selectFiles]]" chroming="solid">
+                <i class="fa fa-upload"></i> Upload
+            </oj-button> -->
+            <oj-file-picker class='oj-filepicker-custom' select-on='click'
+            on-oj-select='[[uploadCsvFile]]'>
+            <oj-button chroming="solid" class="demo-button-blue" slot='trigger'
+            disabled="[[!mappingSetId()]]" :class="[[!mappingSetId()?'disable':'']]">
+                <i class="fa fa-upload"></i> Upload
+            </oj-button>
+        </oj-file-picker>
+        </div>
+        <div class="oj-flex-item oj-sm-1"></div>
+    </div>
+    <div class="oj-flex">
+        <div class="oj-flex-item oj-sm-1"></div>
+        <div class="oj-flex-item oj-sm-8">
+
+        </div>
+        <div class="oj-flex-item  oj-md-2 oj-sm-3 txtRight">
+            <oj-button class="demo-button-blue" disabled="[[validationType()=='SQL Query']]" on-oj-action="[[addNewRecord]]" chroming="solid">
+                <i class="fa fa-plus-circle"></i>
+            </oj-button>
+            <oj-button class="demo-button-blue" disabled="[[validationType()=='SQL Query']]" chroming="solid">
+                <i class="fa fa-refresh"></i>
+            </oj-button>
+        </div>
+
+    </div>
+
+    <div class="oj-flex btnmargin">
+        <div class="oj-flex-item oj-sm-1"></div>
+        <div class="oj-flex-item oj-sm-10">
+            <oj-table id="mappingtable" aria-label="mappingtable" data="[[dataprovider]]" edit-mode='rowEdit'
+                edit-row='{{editRow}}' style="width:100%;height:auto;max-height:300px;"
+                scroll-policy="loadMoreOnScroll" on-oj-before-row-edit='[[beforeRowEditListener]]'
+                on-oj-before-row-edit-end='[[beforeRowEditEndListener]]' scroll-policy-options='{"fetchSize": 20}'
+                columns='[
+                          {"headerText": "S.No.", 
+                          "field": "rowid",
+                          "headerClassName": "oj-sm-only-hide",
+                          "className": "oj-sm-only-hide",
+                          "resizable": "enabled",
+                          "id": "rowId"},
+
+                          {"headerText": "Source Field 1", 
+                          "field": "sourceField1",                        
+                          "resizable": "enabled",
+                          "id": "srcfield1","template":"srcfield1"},
+
+                          {"headerText": "Source Field 2", 
+                          "field": "sourceField2",
+                          "resizable": "enabled",
+                          "id": "srcfield2","template":"srcfield2"},
+
+                          {"headerText": "Source Field 3", 
+                          "field": "sourceField3",                          
+                          "resizable": "enabled",
+                          "id": "srcfield3","template":"srcfield3"},
+
+                          {"headerText": "Cloud Value", 
+                          "field": "targetValue",                          
+                          "resizable": "enabled",
+                           "className": "oj-sm-down-hide",
+                          "id": "cloudvalue","template":"cloudvalue"},
+                         
+                          {"headerText": "Enable", 
+                          "field": "enabledFlag",
+                          "headerClassName": "oj-sm-only-hide",
+                          "className": "oj-sm-hide-only",
+                          "resizable": "enabled",
+                          "id": "Enable","template": "select"},
+
+                          {"headerText": "Action",
+                          "field": "rowid",
+                          "style":"padding-top: 0px; padding-bottom: 0px;",
+                          "headerClassName": "oj-helper-text-align-end",
+                          "className": "oj-helper-text-align-end",
+                          "template": "actionTemplate",
+                          "id": "action"}
+                                               
+                        
+                           ]' class="demo-table-container">
+
+                <template slot="srcfield1" data-oj-as="cell">
+                    <oj-bind-if test='[[mappingType()=="One to One" || mappingType()=="Two to One" || mappingType()=="Three to One"]]'>
+                    <oj-bind-if test='[[cell.mode=="navigation"]]'>
+                        <oj-bind-text value="[[cell.data]]"></oj-bind-text>
+                    </oj-bind-if>
+                    <oj-bind-if test='[[cell.mode=="edit"]]'>
+                        <oj-input-text id="it1" value="{{rowData.sourceField1}}" class="editable"></oj-input-text>
+                    </oj-bind-if>
+                </oj-bind-if>
+                </template>
+                <template slot="srcfield2" data-oj-as="cell">
+                    <oj-bind-if test='[[mappingType()=="Two to One" || mappingType()=="Three to One"]]'>
+                    <oj-bind-if test='[[cell.mode=="navigation"]]'>
+                        <oj-bind-text value="[[cell.data]]"></oj-bind-text>
+                    </oj-bind-if>
+                    <oj-bind-if test='[[cell.mode=="edit"]]'>
+                        <oj-input-text id="it1" value="{{rowData.sourceField2}}" class="editable"></oj-input-text>
+                    </oj-bind-if>
+                </oj-bind-if>
+                </template>
+                <template slot="srcfield3" data-oj-as="cell">
+                    <oj-bind-if test='[[mappingType()=="Three to One"]]'>
+                    <oj-bind-if test='[[cell.mode=="navigation"]]'>
+                        <oj-bind-text value="[[cell.data]]"></oj-bind-text>
+                    </oj-bind-if>
+                    <oj-bind-if test='[[cell.mode=="edit"]]'>
+                        <oj-input-text id="it1" value="{{rowData.sourceField3}}" class="editable"></oj-input-text>
+                    </oj-bind-if>
+                </oj-bind-if>
+                </template>
+                <template slot="cloudvalue" data-oj-as="cell">                    
+                    <oj-bind-if test='[[cell.mode=="navigation"]]'>
+                        <oj-bind-text value="[[cell.data]]"></oj-bind-text>
+                    </oj-bind-if>
+                    
+                    <oj-bind-if test='[[cell.mode=="edit" && validationType()=="Lookup Value"]]'>
+                        <oj-select-single id="ss1" value='{{rowData.targetValue}}' data='[[cloudData]]'
+                            class="editable">
+                        </oj-select-single>
+                    </oj-bind-if>
+
+                    <oj-bind-if test='[[cell.mode=="edit" && validationType()=="Basic"]]'>
+                        <oj-input-text id="it1" value="{{rowData.targetValue}}" class="editable"></oj-input-text>
+                    </oj-bind-if>
+                </template>
+                <template slot="select" data-oj-as="cell">
+                    <oj-bind-if test='[[cell.mode=="navigation"]]'>
+                        <div>
+                            <oj-bind-if test='[[cell.data ==  "checked"]]'>
+                                <span class="fa fa-check fa-lg" role="img" aria-label="error"
+                                    style="color:#007acc;"></span>
+                            </oj-bind-if>
+                        </div>
+                    </oj-bind-if>
+                    <oj-bind-if test='[[cell.mode=="edit"]]'>
+                        <oj-checkboxset id="clt3" value="{{rowData.enabledFlag}}" style="margin-top : 20px!important;margin-left: 55px;"
+                            class="oj-choice-direction-row editable">
+                            <oj-option value="checked"></oj-option>
+                        </oj-checkboxset>
+                    </oj-bind-if>
+                </template>
+                <template slot="actionTemplate" data-oj-as="cell">
+                    <oj-bind-if test='[[cell.mode=="navigation"]]'>
+                      <oj-button
+                        data-oj-clickthrough="disabled"
+                        class="oj-button-sm"
+                        display="icons"
+                        chroming="borderless"
+                        on-oj-action="[[handleUpdate]]">
+                        <span slot="startIcon" class="oj-ux-ico-batch-edit">
+                          
+                        </span>
+                        Edit
+                      </oj-button>
+                      <oj-button
+                      data-oj-clickthrough="disabled"
+                      class="oj-button-sm"
+                      display="icons"
+                      chroming="borderless"
+                      on-oj-action="[[handleDelete]]">
+                      <span slot="startIcon" class="oj-ux-ico-trash">
+                        
+                      </span>
+                      <oj-bind-text value="[[cell.data]]"></oj-bind-text>
+                    </oj-button>
+                    </oj-bind-if>
+              
+                    <oj-bind-if test='[[cell.mode=="edit"]]'>
+                      <oj-toolbar
+                        data-oj-clickthrough="disabled"
+                        chroming="borderless"
+                        class="oj-sm-padding-0-vertical oj-sm-padding-4x-end oj-sm-float-end">
+                        <oj-button
+                          display="icons"
+                          class="oj-button-sm"
+                          on-oj-action="[[handleDone]]"
+                          data-oj-clickthrough="disabled">
+                          <span slot="startIcon" class="oj-ux-ico-check"></span>
+                          Save
+                        </oj-button>
+                        <oj-button
+                          display="icons"
+                          class="oj-button-sm"
+                          on-oj-action="[[handleCancel]]"
+                          data-oj-clickthrough="disabled">
+                          <span slot="startIcon" class="oj-ux-ico-multiply"></span>
+                          Cancel
+                        </oj-button>
+                      </oj-toolbar>
+                    </oj-bind-if>
+                  </template>
+
+            </oj-table>
+            <div class="txtCenter">
+                <div><i class="fa fa-angle-down" style="color:black" aria-hidden="true"></i></div>
+                <div class="head31" on-click="[[loadMore]]">Load More</div>
+            </div>
+        </div>
+
+        <div class="oj-flex-item oj-sm-1"></div>
+    </div>
+</div>

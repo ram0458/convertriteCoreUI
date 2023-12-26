@@ -1,0 +1,131 @@
+<!--
+ Copyright (c) 2014, 2023, Oracle and/or its affiliates.
+ Licensed under The Universal Permissive License (UPL), Version 1.0
+ as shown at https://oss.oracle.com/licenses/upl/
+ -->
+<div class="oj-hybrid-padding">
+  <div class="oj-flex">
+    <div class="oj-flex-item oj-sm-4">
+      <span class="mainPageTitle">
+        <i class="fa fa-tachometer" style="color:#007acc" aria-hidden="true"></i>
+        Dashboard</span>
+    </div>
+    <div class="oj-flex-item oj-sm-4">
+    </div>
+    <div class="oj-flex-item oj-sm-4 txtRight">
+      <span class="brdcrmbs">ConvertRite > Dashboard</span>
+    </div>
+  </div>
+  <hr>
+   
+    <div class="oj-flex">
+
+      <div class=" oj-flex-item oj-md-2 oj-sm-12 oj-sm-padding-2x-horizontal">
+        <div class="tile2 oj-panel oj-panel-shadow-xs oj-sm-margin-2x">
+          <div class="dstile">PODs</div>
+          <div class="poddshead1"><oj-bind-text value="[[podName]]"></oj-bind-text></div>
+          <div class="dshead1">          
+            <span on-click="[[openPodDtls]]"><i class="fa fa-eye" aria-hidden="true" style="color:rgb(27 122 189);margin-top:5px;"></i></span>
+          </div>
+        </div>
+      </div>
+      <div class=" oj-flex-item oj-md-2 oj-sm-12 oj-sm-padding-2x-horizontal">
+        <div class="tile2  oj-panel oj-panel-shadow-xs oj-sm-margin-2x">
+          <div class="dstile">Projects</div>
+          <div class="poddshead1"><oj-bind-text value="[[projects]]"></oj-bind-text></div>
+          <div class="dshead1">          
+            <span on-click="[[openProjects]]"><i class="fa fa-eye" aria-hidden="true" style="color:rgb(27 122 189);"></i></span>
+          </div>
+        </div>
+      </div>
+
+      <div class=" oj-flex-item oj-md-2 oj-sm-12 oj-sm-padding-2x-horizontal">
+        <div class="tile2  oj-panel oj-panel-shadow-xs oj-sm-margin-2x">
+          <div class="dstile">Objects</div>
+          <div class="poddshead1"><oj-bind-text value="[[objects]]"></oj-bind-text></div>
+          <div class="dshead1">          
+            <span on-click="[[openObjects]]"><i class="fa fa-eye" aria-hidden="true" style="color:rgb(27 122 189);""></i></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="oj-flex-item oj-md-2 oj-sm-12 oj-sm-padding-2x-horizontal">
+        <div class="oj-panel oj-panel-shadow-xs oj-sm-margin-2x tile2">
+          <div class="dstile">Parent Objects</div>
+          <div class="poddshead1"><oj-bind-text value="[[parentObjects]]"></oj-bind-text></div>
+          <div class="dshead1">          
+            <span ><i class="fa fa-eye" aria-hidden="true" style="color:rgb(27 122 189);"></i></span>
+          </div>
+        </div>
+      </div>      
+
+      <div class="oj-flex-item oj-md-2 oj-sm-12 oj-sm-padding-2x-horizontal">
+        <div class="oj-panel oj-panel-shadow-xs oj-sm-margin-2x tile2">
+          <div class="dstile">Source Templates</div>
+          <div class="poddshead1"><oj-bind-text value="[[sourceTemp]]"></oj-bind-text></div>
+          <div class="dshead1">          
+            <span on-click="[[openSourceTemp]]"><i class="fa fa-eye" aria-hidden="true" style="color:rgb(27 122 189);""></i></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="oj-flex-item oj-md-2 oj-sm-12 oj-sm-padding-2x-horizontal">
+        <div class="oj-panel oj-panel-shadow-xs oj-sm-margin-2x tile2">
+          <div class="dstile">Cloud Templates</div>
+          <div class="poddshead1"><oj-bind-text value="[[cloudTemp]]"></oj-bind-text></div>
+          <div class="dshead1">          
+            <span on-click="[[openCloudTemp]]"><i class="fa fa-eye" aria-hidden="true" style="color:rgb(27 122 189);""></i></span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div style="margin:10px;"></div>
+    <div class="oj-flex">
+      <div class="oj-flex-item oj-md-6 oj-sm-12 oj-sm-padding-2x-horizontal">
+        <div class="oj-panel oj-panel-shadow-xs oj-sm-margin-2x tile1">
+          <oj-chart
+          id="barChart"
+          type="bar"
+          style="height:300px"
+          orientation="vertical"
+          stack="off"
+          data="[[dataProvider]]"
+          animation-on-display="auto"
+          animation-on-data-change="auto"
+          hover-behavior="dim">
+          <template slot="itemTemplate" data-oj-as="item">
+            <oj-chart-item
+              value="[[item.data.value]]"
+              group-id="[[ [item.data.group] ]]"
+              series-id="[[item.data.series]]"></oj-chart-item>
+          </template>
+        </oj-chart>
+
+
+        </div>
+      </div>
+      <div class="oj-flex-item oj-md-6 oj-sm-12 oj-sm-padding-2x-horizontal">
+        <div class="oj-panel oj-panel-shadow-xs oj-sm-margin-2x tile1">
+          <oj-chart
+          type="bubble"
+          style="height:300px"
+          data="[[bubledataProvider]]"
+          animation-on-display="auto"
+          animation-on-data-change="auto"
+          hover-behavior="dim">
+          <template slot="itemTemplate" data-oj-as="item">
+            <oj-chart-item
+              x="[[item.data.x]]"
+              y="[[item.data.y]]"
+              z="[[item.data.z]]"
+              group-id="[[ [item.data.group] ]]"
+              series-id="[[item.data.series]]"></oj-chart-item>
+          </template>
+        </oj-chart>
+        </div>
+      </div>
+     
+    </div>
+  
+</div>

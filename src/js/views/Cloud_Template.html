@@ -1,0 +1,481 @@
+<!--
+ Copyright (c) 2014, 2023, Oracle and/or its affiliates.
+ Licensed under The Universal Permissive License (UPL), Version 1.0
+ as shown at https://oss.oracle.com/licenses/upl/
+ -->
+<div class="oj-hybrid-padding">
+    <oj-messages messages="[[messagesDataProvider]]" display="notification"
+        position="[[riteUTils.positions]]"></oj-messages>
+    <oj-popup id="viewPopup" auto-dismiss="focusLoss" modality="modeless" position.at.horizontal="start"
+        position.at.vertical="bottom" position.collision="none" position.my.horizontal="end" position.my.vertical="top">
+        <div>
+            <!-- <div class="head21">
+                <oj-bind-text value="View Name"></oj-bind-text>
+            </div>
+            <div class="head31">
+                <oj-bind-text value="XXR_ASSIGNMENT_4002_V"></oj-bind-text>
+            </div>
+            <hr> -->
+            <div class="head21">
+                <oj-bind-text value="Staging Table :"></oj-bind-text>
+            </div>
+            <div class="head31">          
+            <oj-bind-text value="{{stagingTableName}}"></oj-bind-text>
+            </div>
+        </div>
+    </oj-popup>
+    <div id="dialogWrapper">
+        <oj-dialog id="srchDailog" dialog-title="" aria-describedby="desc">
+            <div slot="header" class="txtRight">
+                <span on-click="[[closeSrchDailog]]">
+                    <i class="fa fa-times-circle-o" style="color:red;font-size:20px;"></i>
+                </span>
+            </div>
+            <div slot="body">
+                <oj-defer>
+                    <div class="oj-flex">
+                        <div class="oj-flex-item oj-md-8 mainPageTitle">
+                            <i class="fa fa-cloud" style="color:#007acc;font-size:20px;" aria-hidden="true"></i>
+                            Search Cloud Template
+                        </div>
+                        <div class="oj-flex-item oj-md-4 txtRight">
+                            <oj-input-text style="width:15vw;margin:3px;" id="filter" value='{{srchfilter}}'
+                                on-raw-value-changed="[[searchanyvalueChanged]]">
+                                <div slot="start" class="oj-text-field-start-end-icon fa fa-search" role="img"></div>
+                            </oj-input-text>
+                        </div>
+                    </div>
+                    <div class="oj-flex oj-sm-12">
+                        <oj-table id="table" aria-label="src table" data="[[searchdataprovider]]" layout="fixed"
+                            on-selection-changed='{{selectionListener}}' selection-mode='{"row": "single"}'
+                            style="width:100%;height:350px;" scroll-policy="loadMoreOnScroll" columns='[                        
+
+
+                            {"headerText": "Template", 
+                             "field": "templateName",
+                             "resizable": "enabled",
+                             "id": "templateName"}, 
+
+                             {"headerText": "Template Code", 
+                             "field": "templateCode",
+                             "resizable": "enabled",
+                             "id": "templateCode"},
+
+                             {"headerText": "Project Name", 
+                             "field": "projectName",
+                             "resizable": "enabled",
+                             "id": "projectName"},
+
+
+                             {"headerText": "Parent Object Name", 
+                             "field": "parentObjectCode",
+                             "resizable": "enabled",
+                             "id": "parentObjectCode"},
+
+                             {"headerText": "Object Name", 
+                             "field": "objectCode",
+                             "resizable": "enabled",
+                             "id": "objectCode"},
+
+                             {"headerText": "MetaData Table Name", 
+                             "field": "metaDataTableName",
+                             "resizable": "enabled",
+                             "id": "metaDataTableName"} 
+                             ]' class="demo-table-container"></oj-table>
+                    </div>
+                </oj-defer>
+            </div>
+        </oj-dialog>
+        <oj-dialog id="userHookDailog" dialog-title="" aria-describedby="desc">
+            <div slot="header" class="txtRight">
+                <span on-click="[[closeUserHooks]]">
+                    <i class="fa fa-times-circle-o" style="color:red;font-size:20px;"></i>
+                </span>
+            </div>
+            <div slot="body">              
+                    <div class="oj-flex">
+                        <div class="oj-flex-item oj-md-8 mainPageTitle">
+                            <i style="color:#007acc;font-size:20px;" aria-hidden="true"></i>
+                            User Hooks
+                        </div>                     
+                    </div>
+                    <div class="oj-sm-12">
+                        <oj-form-layout max-columns="3" label-edge="top" direction="row" style="padding: 5px;">                           
+                      
+                            <oj-select-single label-hint="[[riteUTils.riteLbl.preTransfomHook]]" data="[[hookData]]"
+                            placeholder="[[riteUTils.riteLbl.preTransfomHook]]" value="{{preTransfomHook}}">
+                            </oj-select-single>
+                      
+                            <oj-select-single label-hint="[[riteUTils.riteLbl.PostTransformHook]]" data="[[hookData]]"
+                            placeholder="[[riteUTils.riteLbl.PostTransformHook]]" value="{{PostTransformHook}}">
+                            </oj-select-single>
+                      
+                            <oj-select-single label-hint="[[riteUTils.riteLbl.FBDIHDLgenerationHook]]" data="[[hookData]]"
+                            placeholder="[[riteUTils.riteLbl.FBDIHDLgenerationHook]]" value="{{FBDIHDLgenerationHook}}">
+                            </oj-select-single>                      
+
+                         </oj-form-layout>                        
+                    </div> 
+                    <div class="oj-flex">
+                        <div class="oj-flex-item txtCenter">
+                            <oj-button class="demo-button-blue" on-oj-action="[[saveUserHooks]]"  chroming="solid">
+                                <i class="fa fa-save"></i> Save
+                            </oj-button>
+                        </div>
+                    </div>
+
+            </div>
+        </oj-dialog>
+    </div>
+    <div class="oj-flex">
+        <div class="oj-flex-item oj-md-4 oj-sm-12">
+            <span class="mainPageTitle">
+                <i class="fa fa-empire filter" aria-hidden="true"></i> Cloud Template </span>
+        </div>
+        <div class="oj-flex-item oj-md-4 oj-sm-only-hide">
+
+        </div>
+        <div class="oj-flex-item oj-md-4 txtRight oj-sm-only-hide">
+            <span class="brdcrmbs"> ConvertRite > Conversion Workbench > Cloud Template </span>
+        </div>
+    </div>
+    <hr>
+    <div class="oj-flex">
+        <div class="oj-flex-item oj-sm-4">
+            <div class="pageTitle"><i class="fa fa-snowflake-o filter" aria-hidden="true"></i> Template Header</div>
+        </div>
+        <div class="oj-flex-item oj-sm-4">
+
+        </div>
+        <div class="oj-flex-item oj-sm-4 txtRight">
+            <oj-button class="demo-button-blue" on-oj-action="[[showSrchDailog]]" chroming="solid">
+                <i class="fa fa-search"></i>
+            </oj-button>
+            <oj-button class="demo-button-blue" chroming="solid" on-oj-action="[[resetCludTemplate]]">
+                <i class="fa fa-plus"></i>
+            </oj-button>
+            <div style="width:30px;float:right;margin-top:-3px;">
+                <div class="float" id="go" on-click="[[showViewPopup]]">
+                    <i class="fa fa-table my-float"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="oj-flex">
+        <div class="oj-flex-item oj-sm-12">
+            <oj-validation-group id="tracker" valid="{{groupValid}}">
+                <oj-form-layout max-columns="6" label-edge="top" direction="row">
+
+                    <oj-input-text value="{{templateName}}" label-hint="[[riteUTils.riteLbl.templateName]]"
+                        placeholder="[[riteUTils.riteLbl.templateName]]" validators="[[templateNameValidator]]"
+                        disabled="[[temp()!== '0']]"
+                        :class="[[temp()!== '0'?'disable':'']]"
+                        required></oj-input-text>
+
+                    <oj-input-text value="{{templateCode}}" label-hint="[[riteUTils.riteLbl.templateCode]]"
+                    disabled="[[temp()!== '0']]" on-raw-value-changed="[[checkSpaces]]" validators="[[templateCodeValidator]]" 
+                        placeholder="[[riteUTils.riteLbl.templateCode]]" :class="[[temp()!== '0'?'disable':'']]"
+                        required></oj-input-text>
+
+                    <oj-bind-if test='[[temp() === "0"]]'>
+                        <oj-select-single label-hint="[[riteUTils.riteLbl.projectName]]" data="[[projectNamedata]]"
+                            placeholder="[[riteUTils.riteLbl.projectName]]" value="{{projectId}}"
+                            on-value-changed="[[projnameValueChange]]" required>
+                        </oj-select-single>
+                    </oj-bind-if>
+
+                    <oj-bind-if test='[[temp() !== "0"]]'>
+                        <oj-input-text class="inputbox disable" disabled="true"
+                            label-hint="[[riteUTils.riteLbl.projectName]]" value="{{projectname}}"></oj-input-text>
+                    </oj-bind-if>
+
+                    <oj-bind-if test='[[temp() === "0"]]'>
+                        <oj-select-single required label-hint="[[riteUTils.riteLbl.parentObject]]"
+                            value="{{parentobject}}" data="[[parentobjectdata]]" value="{{parentobject}}"
+                            placeholder="[[riteUTils.riteLbl.parentObject]]" on-value-changed="[[pobjCodeValueChange]]">
+                        </oj-select-single>
+                    </oj-bind-if>
+
+                    <oj-bind-if test='[[temp() !== "0"]]'>
+                        <oj-input-text class="inputbox disable" disabled="true"
+                            label-hint="[[riteUTils.riteLbl.parentObject]]" value="{{parentobjectName}}"></oj-input-text>
+                    </oj-bind-if>
+
+                    <oj-bind-if test='[[temp() === "0"]]'>
+                        <oj-select-single label-hint="[[riteUTils.riteLbl.objectCode]]"
+                            placeholder="[[riteUTils.riteLbl.objectCode]]" required data="[[objectdata]]"
+                            value="{{objectcode}}" on-value-changed="[[objCodeValueChange]]">
+                        </oj-select-single>
+                    </oj-bind-if>
+                    <oj-bind-if test='[[temp() !== "0"]]'>
+                        <oj-input-text class="inputbox disable" disabled="true"
+                            label-hint="[[riteUTils.riteLbl.objectCode]]" value="{{objectName}}"></oj-input-text>
+                    </oj-bind-if>
+
+                    <oj-bind-if test='[[temp() === "0"]]'>
+                        <oj-select-single label-hint="[[riteUTils.riteLbl.metaDataTableName]]"
+                            placeholder="[[riteUTils.riteLbl.metaDataTableName]]" required data="[[cloudMetaData]]"
+                            on-value-changed="[[onMetadataTableChange]]"
+                            value="{{metaDataTableId}}">
+                        </oj-select-single>
+                    </oj-bind-if>
+                    <oj-bind-if test='[[temp() !== "0"]]'>
+                        <oj-input-text class="inputbox disable" disabled="true"
+                            label-hint="[[riteUTils.riteLbl.metaDataTableName]]"
+                            value="{{cloudmetadatatableName}}"></oj-input-text>
+                    </oj-bind-if>  
+                    <!-- <oj-bind-if test='[[temp() === "0"]]'> -->
+                        <oj-select-single label-hint="[[riteUTils.riteLbl.sourceTemplate]]"
+                            placeholder="[[riteUTils.riteLbl.sourceTemplate]]"  data="[[sourceTempData]]"
+                            value="{{sourceTemplateId}}" on-value-changed="[[getSourceClumns]]">
+                        </oj-select-single>
+                    <!-- </oj-bind-if> -->
+                    <!-- <oj-bind-if test='[[temp() !== "0"]]'>
+                        <oj-input-text class="inputbox disable" disabled="true"
+                            label-hint="[[riteUTils.riteLbl.sourceTemplate]]"
+                            value="{{sourcetemplateName}}"></oj-input-text>
+                    </oj-bind-if> -->
+                    <oj-bind-if test='[[temp() === "0"]]'>
+                        <oj-select-single label-hint="[[riteUTils.riteLbl.version]]"
+                            placeholder="[[riteUTils.riteLbl.version]]" required data="[[versionData]]"
+                            value="{{version}}">
+                        </oj-select-single>
+                    </oj-bind-if>
+                    <oj-bind-if test='[[temp() !== "0"]]'>
+                        <oj-input-text class="inputbox disable" disabled="true"
+                            label-hint="[[riteUTils.riteLbl.version]]" value="{{version}}"></oj-input-text>
+                    </oj-bind-if>
+                </oj-form-layout>
+            </oj-validation-group>
+        </div>
+
+
+    </div>
+
+    <div class="oj-flex btnmargin">
+        <div class="oj-flex-item oj-md-3 oj-sm-4 txtLeft">
+            <div class="pageTitle"><i class="fa fa-snowflake-o filter" aria-hidden="true"></i> Template Lines</div>
+        </div>
+        <div class="oj-flex-item oj-md-7 oj-sm-6 txtCenter">
+            <oj-bind-if test="[[btnLbl()=='Save']]">
+                <oj-button class="demo-button-blue" on-oj-action="[[saveMsg]]" chroming="solid">
+                  <i class="fa fa-save"></i> Save
+                </oj-button>
+              </oj-bind-if>
+              <oj-bind-if test="[[btnLbl()=='Update']]">
+                <oj-button class="demo-button-blue" on-oj-action="[[saveMsg]]" chroming="solid">
+                  <i class="fa fa-save"></i> Update
+                </oj-button>
+              </oj-bind-if>
+
+            <oj-button class="demo-button-blue" on-oj-action="[[createStagingTable]]" chroming="solid">
+                <i class="fa fa-plus-circle"></i> Create Table
+            </oj-button>
+            <oj-button class="demo-button-blue" on-oj-action="[[openUserHooks]]" chroming="solid">
+                <i class="fa fa-anchor"></i> User Hooks
+            </oj-button>
+            <oj-button class="demo-button-blue" on-oj-action="[[generateSequence]]" chroming="solid">
+                <i class="fa fa-sort"></i> Sequence
+            </oj-button>
+        </div>
+        <div class="oj-flex-item oj-md-4 oj-sm-2 txtRight">
+            <!-- <span class="toggle" on-click="[[togglelink]]"><img src="css/images/r.png" height="20px"></span> 
+            <span><i class="filter fa fa-search" aria-hidden="true"></i></span>
+            <span><i class="filter fa fa-download" aria-hidden="true"></i></span>-->
+            <!-- <span><i class="filter fa fa-anchor" aria-hidden="true"></i></span> -->
+        </div>
+    </div>
+    <div class="oj-flex btnmargin">
+
+        <div class="oj-flex-item oj-sm-12">
+            <oj-table id="cloudwb" aria-label="cloudwb" data="[[dataprovider]]" edit-mode='rowEdit'
+                edit-row='{{editRow}}' dnd='{"reorder": {"columns": "enabled"}}'
+                style="max-height: calc(100vh - 380px);width:100%;"
+                scroll-policy="loadMoreOnScroll" on-oj-before-row-edit='[[beforeRowEditListener]]'
+                on-oj-before-row-edit-end='[[beforeRowEditEndListener]]' scroll-policy-options='{"fetchSize": 20}'
+                columns='[
+                          {"headerText": "S.No.", 
+                          "field": "rowId",
+                          "headerClassName": "oj-sm-only-hide",
+                          "className": "oj-sm-only-hide",
+                          "resizable": "enabled",
+                          "id": "rowId"},
+
+                          {"headerText": "Cloud Column", 
+                          "field": "columnName",                        
+                          "resizable": "enabled",
+                          "id": "cludcolumn","template":"cludcolumn"},
+
+                          {"headerText": "Select", 
+                          "field": "selected",
+                          "resizable": "enabled",
+                          "id": "select","template":"select"},
+
+                          {"headerText": "Source Column", 
+                          "field": "sourceColumnName",                          
+                          "resizable": "enabled",
+                           "className": "oj-sm-down-hide",
+                          "id": "srccolumn","template":"srccolumn"},
+
+                          {"headerText": "Mapping Type", 
+                          "field": "mappingType",                          
+                          "resizable": "enabled",
+                           "className": "oj-sm-down-hide",
+                          "id": "mappingType","template":"mappingType"},  
+                                          
+                          {"headerText": "Mapping Name", 
+                          "field": "mappingSetName",                          
+                          "resizable": "enabled",
+                           "className": "oj-sm-down-hide",
+                          "id": "mappingset","template":"mappingset"},  
+
+                          {"headerText": "Mapping Value", 
+                          "field": "mappingVal",                          
+                          "resizable": "enabled", "width":"200px",
+                           "className": "oj-sm-down-hide",
+                          "id": "mappingclumn","template":"mappingclumn"},  
+
+                          {"headerText": "Sequence", 
+                          "field": "seq",                          
+                          "resizable": "enabled",
+                           "className": "oj-sm-down-hide",
+                          "id": "seq","template":"seq"}
+
+                           ]' class="demo-table-container">
+
+                <template slot="cludcolumn" data-oj-as="cell">
+                    <oj-bind-if test='[[cell.mode=="navigation"]]'>
+                        <oj-bind-text value="[[cell.data]]"></oj-bind-text>
+                        <oj-bind-if test='[[checkmand(cell.data) ]]'>
+                            <span style="color: red !important;">
+                                <oj-bind-text value="*"></oj-bind-text>
+                            </span>
+                        </oj-bind-if>
+                        <span style="color: blue !important;font-size: 9px;">
+                            <oj-bind-text value="[[checkdatatype(cell.data) ]]"></oj-bind-text>
+                        </span>
+                    </oj-bind-if>
+                    <oj-bind-if test='[[cell.mode=="edit"]]'>
+                        <oj-bind-text value="[[rowData.columnName]]"></oj-bind-text>
+                        <oj-bind-if test='[[checkmand(rowData.columnName) ]]'>
+                            <span style="color: red !important;">
+                                <oj-bind-text value="*"></oj-bind-text>
+                            </span>
+                        </oj-bind-if>
+                        <span style="color: blue !important;font-size: 9px;">
+                            <oj-bind-text value="[[rowData.columnType ]]"></oj-bind-text>
+                        </span>
+                    </oj-bind-if>
+                </template>
+
+                <template slot="select" data-oj-as="cell">
+                    <oj-bind-if test='[[cell.mode=="navigation"]]'>
+                        <div oj-sm-justify-content-center>
+                            <oj-bind-if test='[[cell.data ==  "checked"]]'>
+                                <span class="fa fa-check fa-lg" role="img" aria-label="error"
+                                    style="color:#007acc;"></span>
+                            </oj-bind-if>
+                        </div>
+                    </oj-bind-if>
+                    <oj-bind-if test='[[cell.mode=="edit"]]'>
+                        <oj-checkboxset id="clt3" value="{{rowData.selected}}" style="padding : 20px;"
+                            class="oj-choice-direction-row editable">
+                            <oj-option value="checked"></oj-option>
+                        </oj-checkboxset>
+                    </oj-bind-if>
+                </template>
+
+                <template slot="srccolumn" data-oj-as="cell">
+                    <oj-bind-if test='[[cell.mode=="navigation"]]'>
+                        <oj-bind-text value="[[cell.data]]"></oj-bind-text>
+                    </oj-bind-if>
+                    <oj-bind-if test='[[cell.mode=="edit"]]'>
+                        <oj-select-single id="clt4" aria-label="type" style="max-width:4vw; width: 5em;"
+                            value="{{rowData.sourceColumnName}}" class="editable" data="[[srccolsLOVdata]]"
+                            on-value-changed="[[sourceColumnvaluechange]]">
+                        </oj-select-single>
+                    </oj-bind-if>
+                </template>
+
+                <template slot="mappingType" data-oj-as="cell">
+                    <oj-bind-if test='[[cell.mode=="navigation"]]'>
+                        <oj-bind-text value="[[cell.data]]"></oj-bind-text>
+                    </oj-bind-if>
+                    <oj-bind-if test='[[cell.mode=="edit"]]'>
+                        <oj-select-one id="clt5" aria-label="type" value='{{rowData.mappingType}}' class="editable"
+                            on-value-changed="[[MappingTypevalueChanged]]">
+                            <oj-option value="As-Is">As-Is</oj-option>
+                            <oj-option value="Prefix">Prefix</oj-option>
+                            <oj-option value="Suffix">Suffix</oj-option>
+                            <oj-option value="Constant">Constant</oj-option>
+                            <oj-option value="One to One">One to One</oj-option>
+                            <oj-option value="Two to One">Two to One</oj-option>
+                            <oj-option value="Three to One">Three to One </oj-option>
+                            <oj-option value="Formula">Formula</oj-option>
+                        </oj-select-one>
+                    </oj-bind-if>
+                </template>
+
+                <template slot="mappingset" data-oj-as="cell">
+                    <oj-bind-if test='[[cell.mode=="navigation"]]'>
+                        <oj-bind-text value="[[cell.data]]"></oj-bind-text>
+                    </oj-bind-if>
+                    <oj-bind-if test='[[cell.mode=="edit" && mappingSetDisabled() == false]]'>
+                        <oj-combobox-one id="clt41" aria-label="type" style="max-width:4vw; width: 5em;" placeholder=""
+                            disabled="[[mappingSetDisabled]]" on-value-changed="[[MappingNamevalueChanged]]"
+                            value="{{rowData.mappingSetName}}" options="[[mappingSetNameLOVdata]]" class="editable">
+                        </oj-combobox-one>
+                    </oj-bind-if>
+                    <oj-bind-if test='[[cell.mode=="edit" && mappingSetDisabled() == true]]'>
+                        <oj-bind-text disabled="[[mappingSetDisabled]]" value="[[cell.data]]"></oj-bind-text>
+                    </oj-bind-if>
+                </template>
+
+                <template slot="mappingclumn" data-oj-as="cell">
+                    <oj-bind-if test='[[cell.mode=="navigation"]]'>
+                        <oj-bind-text value="[[cell.data]]"></oj-bind-text>
+                    </oj-bind-if>
+                    <oj-bind-if test='[[cell.mode=="edit"]]'>
+                        <oj-bind-if test='[[rowData.mappingType=="One to One" ||
+                       rowData.mappingType=="Two to One" || rowData.mappingType=="Three to One"
+                       || rowData.mappingType=="Formula"
+                        
+                        ]]'>   
+                        <oj-select-many
+                        id="selectn"
+                        on-value-changed="[[onMappingValueChange]]"
+                        options="{{mappingDb}}"
+                        value="{{rowData.mappingVal}}"
+                        class="oj-form-control-max-width-md"   class="editable"></oj-select-many>                     
+                        <!-- <oj-c-select-multiple data="[[mappingDb]]" 
+                        item-text="label" value="{{rowData.mappingVal}}"
+                        disabled="[[mappingValueDisabled]]"
+                            label-hint=""></oj-c-select-multiple> -->
+                        </oj-bind-if>
+                    
+                       <oj-bind-if test='[[rowData.mappingType=="Constant" ||
+                       rowData.mappingType=="Prefix" || rowData.mappingType=="Suffix"
+                       ]]'>            
+                            <oj-input-text id="clt7" value="{{rowData.mappingVal}}"  disabled="[[mappingValueDisabled]]" class="editable"></oj-input-text>
+                        </oj-bind-if>
+
+                    </oj-bind-if>
+                </template>
+                <template slot="seq" data-oj-as="cell">
+                    <oj-bind-if test='[[cell.mode=="navigation"]]'>
+                        <oj-bind-text value="[[cell.data]]"></oj-bind-text>
+                    </oj-bind-if>
+                    <oj-bind-if test='[[cell.mode=="edit"]]'>
+                        <oj-input-text id="clt7" value="{{rowData.seq}}" class="editable"></oj-input-text>
+                    </oj-bind-if>
+                </template>
+            </oj-table>
+
+            <div class="txtCenter">
+                <div><i class="fa fa-angle-down" style="color:black" aria-hidden="true"></i></div>
+                <div class="head31" on-click="[[loadMore]]">Load More</div>
+            </div>
+        </div>
+    </div>
+</div>

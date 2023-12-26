@@ -1,0 +1,223 @@
+<!--
+ Copyright (c) 2014, 2023, Oracle and/or its affiliates.
+ Licensed under The Universal Permissive License (UPL), Version 1.0
+ as shown at https://oss.oracle.com/licenses/upl/
+ -->
+<div class="oj-hybrid-padding">
+  <oj-messages messages="[[messagesDataProvider]]" display="notification"
+    position="[[riteUTils.positions]]"></oj-messages>
+  <div class="oj-flex">
+    <div class="oj-flex-item oj-sm-4">
+      <span class="mainPageTitle">
+        <i class="oj-ux-ico-dashboard" style="color:#007acc" aria-hidden="true"></i>
+        Reconciliation</span>
+    </div>
+    <div class="oj-flex-item oj-sm-4">
+    </div>
+    <div class="oj-flex-item oj-sm-4 txtRight">
+      <span class="brdcrmbs">ConvertRite > Reconciliation</span>
+    </div>
+  </div>
+  <hr>
+
+  <div class="oj-flex-item " style="text-align: right;">
+    <oj-bind-if test="[[!isDashboarDetails()]]">
+      <oj-button class="demo-button-blue " on-oj-action="[[swichBtnViews]]" chroming="solid">
+        <i class="oj-ux-ico-switcher oj-lg"></i> Dashboard
+      </oj-button>
+    </oj-bind-if>
+
+    <!-- <oj-bind-if test="[[isDashboarDetails()]]">
+      <oj-button class="demo-button-blue " on-oj-action="[[swichBtnViews]]" chroming="solid">
+        <i class="oj-ux-ico-switcher oj-lg"></i> Report
+      </oj-button>
+
+    </oj-bind-if> -->
+  </div>
+
+  <oj-bind-if test="[[isDashboarDetails()]]">
+    <div class="oj-flex">
+      <div class="oj-flex-item oj-md-2"></div>
+      <div class="oj-flex-item oj-md-8">
+        <oj-validation-group id="tracker" valid="{{groupValid}}">
+          <oj-form-layout max-columns="3" label-edge="top" direction="row">
+
+            <oj-select-single label-hint="[[riteUTils.riteLbl.projectName]]" data="[[projectNamedata]]"
+              placeholder="Project Name" on-value-changed="[[projValueChange]]" value="{{projectId}}" required>
+            </oj-select-single>
+            <oj-select-single required label-hint="[[riteUTils.riteLbl.cldTemplate]]" data="[[templateData]]"
+              value="{{selecttemp}}" placeholder="[[riteUTils.riteLbl.cldTemplate]]" on-value-changed="[[tempValueChanged]]">
+            </oj-select-single>
+
+            <oj-select-single required label-hint="[[riteUTils.riteLbl.batchName]]" data="[[batchNameData]]"
+              value="{{batchName}}" placeholder="[[riteUTils.riteLbl.batchName]]">
+            </oj-select-single>
+            <!-- <oj-input-text class="inputbox"
+                            label-hint="[[riteUTils.riteLbl.batchName]]" required value="{{batchName}}"></oj-input-text> -->
+
+
+          </oj-form-layout>
+        </oj-validation-group>
+      </div>
+      <div class="oj-flex-item oj-md-2"></div>
+    </div>
+
+    <div class="oj-flex">
+      <div class="oj-flex-item txtCenter padding">
+
+        <oj-button class="demo-button-blue txtRight" on-oj-action="[[viewReconDetails]]" chroming="solid">
+          <i class="fa fa-eye" style="padding:5px;"></i> View
+        </oj-button>
+        <oj-button disabled="[[!type()]]" class="demo-button-blue txtRight" on-oj-action="[[dwnSuccRecords]]"
+          chroming="solid">
+          <i class="fa fa-download" style="padding:5px;"></i> Cloud Success Records
+        </oj-button>
+        <oj-button class="demo-button-blue txtRight" disabled="[[!type()]]" on-oj-action="[[dwnRejectionRecords]]"
+          chroming="solid">
+          <i class="fa fa-download" style="padding:5px;"></i> Cloud Rejection Records
+        </oj-button>
+        <oj-button class="demo-button-blue txtRight" disabled="[[!type()]]" on-oj-action="[[dwnFailRecords]]"
+          chroming="solid">
+          <i class="fa fa-download" style="padding:5px;"></i>Validation Failed Records
+        </oj-button>
+      </div>
+    </div>
+    <oj-bind-if test='[[srcrecords()]]'>
+      <div class="oj-flex">
+        <div class="oj-flex-item oj-md-2"></div>
+        <div class="oj-flex-item oj-md-8">
+          <div class="oj-flex">
+
+            <div class=" oj-flex-item oj-md-4 oj-sm-12 oj-sm-padding-2x-horizontal">
+              <div class="reconbox oj-panel oj-panel-shadow-xs oj-sm-margin-2x">
+                <div class="oj-flex">
+                  <div class="oj-flex-item dstile oj-sm-3" style="margin-top:18px;text-align: center;color:blue">
+                    Extracted </div>
+                  <div class="oj-flex-item dstile oj-sm-9">
+                    <div style="margin-left:15px;">
+                      <div>Success - Ratio :
+                        <span style="color:green"><oj-bind-text value="{{extPercentage}}"></oj-bind-text></span>
+                      </div>
+                      <div>Success : <span style="color:green"><oj-bind-text
+                            value="{{extSuccess}}"></oj-bind-text></span>
+
+                        </oj-bind-text></div>
+                      <div>Failure : <span style="color:red"><oj-bind-text value="{{extFailed}}"></oj-bind-text></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class=" oj-flex-item oj-md-4 oj-sm-12 oj-sm-padding-2x-horizontal">
+              <div class="reconbox oj-panel oj-panel-shadow-xs oj-sm-margin-2x">
+                <div class="oj-flex">
+                  <div class="oj-flex-item dstile oj-sm-3" style="margin-top:18px;text-align: center;color:blue">
+                    Validated</div>
+                  <div class="oj-flex-item dstile oj-sm-9">
+                    <div style="margin-left:15px;">
+                      <div>Success - Ratio :
+                        <span style="color:green">
+                          <oj-bind-text value="{{validPercentage}}"></oj-bind-text></span>
+                      </div>
+                      <div>Success : <span style="color:green"><oj-bind-text
+                            value="{{validSuccess}}"></oj-bind-text></span></div>
+                      <div>Failure : <span style="color:red"><oj-bind-text value="{{validFailed}}"></oj-bind-text></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class=" oj-flex-item oj-md-4 oj-sm-12 oj-sm-padding-2x-horizontal">
+              <div class="reconbox oj-panel oj-panel-shadow-xs oj-sm-margin-2x">
+                <div class="oj-flex">
+                  <div class="oj-flex-item dstile oj-sm-3" style="margin-top:10px;text-align:center;color:blue">Cloud
+                    Migrated</div>
+                  <div class="oj-flex-item dstile oj-sm-9">
+                    <div style="margin-left:15px;">
+                      <div>Success - Ratio :
+                        <span style="color:green">
+                          <oj-bind-text value="{{cludPercentage}}"></oj-bind-text></span>
+                      </div>
+                      <div>Success :
+                        <span style="color:green">
+                          <oj-bind-text value="{{cludSuccess}}"></oj-bind-text></span>
+                      </div>
+                      <div>Failure :
+                        <span style="color:red"><oj-bind-text value="{{cludFailed}}"></oj-bind-text>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="oj-flex-item oj-md-2"></div>
+      </div>
+    </oj-bind-if>
+
+    <div class="oj-flex ">
+      <div class="oj-flex-item oj-md-2"></div>
+      <div class="oj-flex-item oj-md-8">
+        <div style="position: absolute;font-size:13px;font-weight:600;">
+          <oj-bind-if test='[[srcrecords()]]'>
+            <oj-bind-text value="[[srcrecords]]" class="padding"></oj-bind-text>
+          </oj-bind-if>
+        </div>
+        <!--   <oj-bind-if test='[[srcrecords()]]'>
+         <oj-chart id="pieChart" type="pie" data="[[SuccFailDataProvider]]" animation-on-display="auto"
+          animation-on-data-change="auto" style-defaults.three-d-effect="[[threeDValue]]" hover-behavior="dim">
+          <template slot="itemTemplate" data-oj-as="item">
+            <oj-chart-item value="[[item.data.value]]" group-id="[[ [item.data.group] ]]"
+              series-id="[[item.data.series]]"></oj-chart-item>
+          </template>
+        </oj-chart>
+      </oj-bind-if> 
+      </div>-->
+        <!-- <div class="oj-flex-item oj-md-4">
+        
+        <oj-chart id="lostDays" type="bar" orientation="horizontal" data="[[barChartDataProvider]]"
+          animation-on-display="auto" value-formats.series.tooltip-display="off" animation-on-data-change="auto"
+          series-comparator="[[seriesComparator]]" group-comparator="[[groupComparator]]"
+          selection-mode="[[selectionValue]]" on-selection-changed="[[selectionVariantListener]]"
+          style-defaults.bar-gap-ratio="0.15" hover-behavior="dim" style="width:auto;height:340px;">
+          <template slot="itemTemplate" data-oj-as="item">         
+            <oj-chart-item y="[[item.data.id]]" value="[[item.data.value]]" group-id="[[ [item.data.group] ]]"
+              series-id="[[item.data.series]]"></oj-chart-item>
+          </template>
+          <template slot='seriesTemplate' data-oj-as='series'>
+            <oj-chart-series display-in-legend='on' color='[[getColor($current.index)]]'>
+            </oj-chart-series>
+          </template>
+        </oj-chart> -->
+        <oj-bind-if test='[[srcrecords()]]'>
+          <div style="text-align: center;margin-top:10px;">
+            <oj-chart id="barChart" type="bar" data="[[barChartDataProvider]]" animation-on-display="auto"
+              animation-on-data-change="auto" orientation="vertical" style-defaults.data-label-position="auto"
+              stack="on" stack-label="on" y-axis.tick-label.rendered="on" style="width:100%;height:300px;">
+              <template slot='itemTemplate' data-oj-as='item'>
+                <oj-chart-item value='[[item.data.value]]' group-id='[[ [item.data.status] ]]'
+                  series-id='[[item.data.result]]' label='[[item.data.value]]'>
+                </oj-chart-item>
+              </template>
+              <template slot='seriesTemplate' data-oj-as='series'>
+                <oj-chart-series display-in-legend='on' color='[[getSeriesColor(series.id)]]'>
+                </oj-chart-series>
+              </template>
+            </oj-chart>
+          </div>
+        </oj-bind-if>
+      </div>
+      <div class="oj-flex-item oj-md-2"></div>
+    </div>
+  </oj-bind-if>
+  <oj-bind-if test="[[!isDashboarDetails()]]">
+  </oj-bind-if>
+
+</div>

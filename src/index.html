@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<!--
+ Copyright (c) 2014, 2023, Oracle and/or its affiliates.
+ Licensed under The Universal Permissive License (UPL), Version 1.0
+ as shown at https://oss.oracle.com/licenses/upl/
+ -->
+
+<!-- ************************ IMPORTANT INFORMATION ************************************
+  This web navigation drawer template is provided as an example of how to configure
+  a JET web application with a navigation drawer as a single page application
+  using ojRouter and oj-module.  It contains the Oracle JET framework and a default
+  requireJS configuration file to show how JET can be setup in a common application.
+  This project template can be used in conjunction with demo code from the JET
+  website to test JET component behavior and interactions.
+
+  Any CSS styling with the prefix "demo-" is for demonstration only and is not
+  provided as part of the JET framework.
+
+  Please see the demos under Cookbook/Patterns/App Shell: Web and the CSS documentation
+  under Support/API Docs/Non-Component Styling on the JET website for more information on how to use
+  the best practice patterns shown in this template.
+
+  Aria Landmark role attributes are added to the different sections of the application
+  for accessibility compliance. If you change the type of content for a specific
+  section from what is defined, you should also change the role value for that
+  section to represent the appropriate content type.
+  ***************************** IMPORTANT INFORMATION ************************************ -->
+<html lang="en-us">
+
+<head>
+  <title>::ConvertRite2.0::</title>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1">
+  <link rel="icon" href="css/images/favicon.ico" type="image/x-icon" />
+
+  <!-- This is the main css file for the default theme -->
+  <!-- injector:theme -->
+  <!-- endinjector -->
+
+  <!-- This contains icon fonts used by the starter template -->
+  <link rel="stylesheet" id="uxiconFont"
+    href="https://static.oracle.com/cdn/fnd/gallery/2304.0.0/images/iconfont/ojuxIconFont.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <!-- This is where you would add any app specific styling -->
+  <link rel="stylesheet" href="css/app.css" type="text/css" />
+  <script src="js/msal-browser.js" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="js/axios.min.js"></script> 
+</head>
+
+<body class="oj-web-applayout-body">
+  <!-- Template for rendering navigation items shared between nav bar and nav list -->
+  <script type="text/html" id="navTemplate">
+      <li><a href="#">
+        <span :class="[[$data.detail.iconClass]]"></span>
+        <oj-bind-text value="[[$data.detail.label]]"></oj-bind-text>
+      </a></li>
+    </script>
+   
+  <div id="globalBody">
+    <oj-popup
+    id="123"
+    auto-dismiss="focusLoss"
+    modality="modeless"
+    position.at.horizontal="start"
+    position.at.vertical="bottom"
+    position.collision="none"
+    position.my.horizontal="end"
+    tail="simple"
+    position.my.vertical="top">
+    <div> 
+      <span class="curUser">
+        <i class="fa fa-database" style="color:#1b7abd" aria-hidden="true"></i>
+        <oj-bind-text value="[[userInstance]]"></oj-bind-text></span>
+      <hr>
+      <oj-bind-for-each data="[[roleDtls]]">
+        <template>          
+            <div on-click="[[changeRole]]" :class="[[userRole()==$current.data.label?'curUser':'exitUser']]">
+                <i class="fa fa-user-circle-o lgnfa1" style="cursor:pointer" aria-hidden="true"></i>
+                <oj-bind-text value="[[$current.data.label]]"></oj-bind-text>
+                <hr>
+            </div>
+        </template>
+    </oj-bind-for-each>
+    </div>
+  </oj-popup>
+    <div id="announce" tabindex="-1" class="sendOffScreen" :aria-live="[[manner]]" aria-atomic="true">
+      <p id="ariaLiveMessage"><oj-bind-text value="[[message]]"></oj-bind-text></p>
+    </div>
+
+    <!--
+         ** Oracle JET V14.1.0 web application navigation drawer pattern.
+         ** Please see the demos under Cookbook/Patterns/App Shell: Web
+         ** and the CSS documentation under Support/API Docs/Non-Component Styling
+         ** on the JET website for more information on how to use this pattern.
+         ** The off-canvas section is used when the browser is resized to a smaller media
+         ** query size for a phone format and hidden until a user clicks on
+         ** the header hamburger icon.
+      -->
+    <div id="componentDemoContent" style="width: 1px; min-width: 100%;">
+
+      <div id="demo-container">
+        <oj-drawer-layout start-opened="{{startOpened}}" class="demo-full-height">
+
+          <div>
+
+            <header role="banner" class="oj-web-applayout-header">
+              <div class="oj-web-applayout-max-width oj-flex-bar oj-sm-align-items-center">
+                <!-- Drawer toggle button -->
+                <oj-bind-if test="[[isLogin()]]">
+                <div class="oj-flex-bar-start" on-click="[[startToggle]]" style="cursor: pointer;">
+                  <span class="hidden">1</span>
+                    <img src="css/images/menu.png" height="30px";>                    
+                </div>
+              </oj-bind-if>  
+                <div class="oj-flex-bar-middle oj-sm-align-items-baseline">
+                  <!-- <span role="img" class="oj-icon demo-oracle-icon" title="Oracle Logo" alt="Oracle Logo"></span>
+                  <h1 class="oj-sm-only-hide oj-web-applayout-header-title" title="Application Name"><oj-bind-text
+                      value="[[appName]]"></oj-bind-text></h1> -->
+                  <img src="css/images/convertrite_logo.png" alt="RiteSoftware:ConvertRite" height="30px">
+                </div>
+                <div class="oj-flex-bar-end">
+                  
+                  <span id="topsrch">
+                    <oj-bind-if test="[[isLogin()]]">
+                    <oj-input-search style="margin:12px;"            
+                    class="oj-form-control-max-width-md oj-sm-only-hide"
+                    value="{{globlsrch}}"  suggestions="[[suggestionsDP]]"
+                    on-oj-value-action="[[gotoMappingPage]]"
+                    placeholder="Global Search"
+                    aria-label="My search field"></oj-input-search> 
+                  </oj-bind-if>
+                  </span>
+                  
+                  <!-- <oj-bind-if test="[[isLogin()]]">
+                    <span><i class="filter1 fa fa-question-circle-o" aria-hidden="true"></i></span>
+                  </oj-bind-if> -->
+                  <!-- <oj-bind-if test="[[isLogin()]]">
+                    <span role="img" class="bell-icon"></span> 
+                  </oj-bind-if> -->
+                  <oj-bind-if test="[[isLogin()]]">
+                    <span role="img" id="go1" class="userAdmin" on-mouseover="[[showRolePopup]]"></span>
+                  </oj-bind-if>
+
+                  <!-- Responsive Toolbar -->
+                  <!-- <oj-toolbar>
+                    <oj-menu-button id="userMenu" display="[[smScreen() ? 'icons' : 'all']]" chroming="borderless">
+                      <span><oj-bind-text value="[[userLogin]]"></oj-bind-text></span>
+                      <span slot="endIcon"
+                        :class="[[{'oj-icon demo-appheader-avatar': smScreen(), 'oj-component-icon oj-button-menu-dropdown-icon': !smScreen()}]]"></span>
+                      <oj-menu id="menu1" slot="menu">
+                        <oj-option id="pref" value="pref">Preferences</oj-option>
+                        <oj-option id="help" value="help">Help</oj-option>
+                        <oj-option id="about" value="about">About</oj-option>
+                        <oj-option id="out" value="out">Sign Out</oj-option>
+                      </oj-menu>
+                    </oj-menu-button>
+                  </oj-toolbar> -->
+                </div>
+              </div>
+            </header>            
+          </div>
+          <div class= "progress" style="margin-top: 30vh;position: fixed;margin-left: 45vw;  z-index: 9998; display: none;">
+            <span class="loader"></span>
+          </div>
+        
+          <oj-module role="main" class="oj-web-applayout-max-width oj-web-applayout-content"
+            config="[[moduleAdapter.koObservableConfig]]">
+          </oj-module>
+
+          <div slot="start" class="demo-drawer-start" id="demo-drawer-start">
+            <div class="demo-drawer-header">
+              <div class="txtCenter">
+                <img :src="[[img()]]" class="logo" />   
+              </div>
+              <!-- <div class="txtCenter">Rite Software</div>
+              <div class="head3 txtCenter">ConvertRite :: Cloud Migration Tool</div> -->
+            </div>
+            <div class="topbanner">
+              <div class="head1">
+                <oj-bind-text value="[[userName]]"></oj-bind-text>
+              </div>
+              <div class="head2">
+                <oj-bind-text value="[[userId]]"></oj-bind-text>
+              </div>
+              <div class="head2" style="font-weight:700;">
+                <oj-bind-text value="[[userInstance]]"></oj-bind-text>
+              </div>
+              <div class="head3">
+                <oj-bind-text value="[[userRole]]"></oj-bind-text>       
+            </div>
+          </div>
+            <oj-navigation-list id="navDrawerList" data="[[navDataProvider]]" edge="start"
+              item.renderer="[[KnockoutTemplateUtils.getRenderer('navTemplate', true)]]" drill-mode="sliding"
+              on-click="[[startToggle]]" selection="{{selection.path}}">
+            </oj-navigation-list>
+            <div class="footer" onclick="signOut()">
+              LogOut <i class="fa fa-sign-out" aria-hidden="true"></i>
+            </div>
+          
+        </oj-drawer-layout>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- This injects script tags for the main javascript files -->
+  <!-- injector:scripts -->
+  <!-- endinjector -->
+
+
+  <script type="text/javascript" src="js/convertUtils.js"></script>
+  <script type="text/javascript" src="js/comnUtils.js"></script>
+  <script type="text/javascript" src="js/apiConfig.js"></script>
+  <script type="text/javascript" src="js/policies.js"></script>
+  <script type="text/javascript" src="js/authConfig.js"></script>
+  <script type="text/javascript" src="js/showmsg.js"></script> 
+  <script type="text/javascript" src="js/authRedirect.js"></script>
+</body>
+</html>

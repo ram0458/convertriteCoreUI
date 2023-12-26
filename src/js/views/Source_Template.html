@@ -1,0 +1,536 @@
+<!--
+ Copyright (c) 2014, 2023, Oracle and/or its affiliates.
+ Licensed under The Universal Permissive License (UPL), Version 1.0
+ as shown at https://oss.oracle.com/licenses/upl/
+ -->
+<div class="oj-hybrid-padding">
+    <oj-messages messages="[[messagesDataProvider]]" display="notification"
+        position="[[riteUTils.positions]]"></oj-messages>
+    <oj-popup id="viewPopup" auto-dismiss="focusLoss" modality="modeless" position.at.horizontal="start"
+        position.at.vertical="bottom" position.collision="none" position.my.horizontal="end" position.my.vertical="top">
+        <div>
+            <div class="head21">
+                <oj-bind-text value="Staging Table Name : "></oj-bind-text>
+            </div>
+            <div class="head31">
+                <oj-bind-text value="[[stagingTableName]]"></oj-bind-text>
+            </div>
+        </div>
+    </oj-popup>
+
+    <div id="dialogWrapper">
+        <oj-dialog id="dupliDailog" dialog-title="Check Duplicates" aria-describedby="desc">
+            <div slot="body">
+                <oj-defer>
+                    <div class="oj-flex">
+                        <div class="oj-flex-item oj-md-6 oj-sm-12">
+                            <p id="desc" style="font-size:13px">Cloud Objects Expects below Columns to be unique</p>
+                            <oj-table id="table" aria-label="dup table" accessibility.row-header="depName"
+                                data="[[chckDupdataprovider]]" style="min-width:95%;height:200px;"
+                                scroll-policy="loadMoreOnScroll" columns='[                        
+                                {"headerText": "Oracle Unique Columns", 
+                                 "field": "columnName",
+                                 "resizable": "enabled",
+                                 "id": "columnName"} 
+                                 ]' class="demo-table-container"></oj-table>
+                        </div>
+                        <div class="oj-flex-item oj-md-6 oj-sm-12" style="margin-top:-5px;">
+                            <p id="desc">&nbsp;</p>
+                            <div class="headiv">Template Unique Columns</div>
+                            <oj-c-select-multiple
+                            data="[[srcTempDp]]"
+                            value="[[selectedClumns]]"
+                            on-value-changed="[[isTemplateUniqSelected]]"              
+                            item-text="label"></oj-c-select-multiple>
+                            <!-- <oj-table id="table" aria-label="dup table" accessibility.row-header="depName"
+                                data="[[chckDupdataprovider]]" style="min-width:95%;height:200px;"
+                                scroll-policy="loadMoreOnScroll" columns='[                        
+                            {"headerText": "Column Name", 
+                             "field": "columnName",
+                             "resizable": "enabled",
+                             "id": "columnName"} 
+                             ]' class="demo-table-container"></oj-table> -->
+                        </div>
+                    </div>
+                    <div class="oj-flex">
+                        <div class="oj-flex-item txtCenter">
+                            <oj-checkboxset id="normalize" disabled='[[disableCheckBox]]' value="{{normalizeFlag}}"
+                                label-hint="">
+                                <oj-option value="checked">No Duplicates in my data. Process All</oj-option>
+                            </oj-checkboxset>
+                        </div>
+                    </div>
+                    <div class="oj-flex">
+                        <div class="oj-flex-item txtCenter">
+                            <oj-button class="demo-button-blue" on-oj-action="[[closeDuDailog]]" chroming="solid">
+                                <i class="fa fa-times-circle"></i>
+                            </oj-button>
+
+                            <oj-button class="demo-button-blue txtRight" on-oj-action="[[saveChkDuplicates]]" chroming="solid">
+                                <i class="fa fa-save"></i>
+                            </oj-button>
+                        </div>
+                    </div>
+                </oj-defer>
+            </div>
+        </oj-dialog>
+        <oj-dialog id="loadDialog" dialog-title="" aria-describedby="desc">
+            <div slot="header">
+                <div class="oj-flex">
+                    <div class="oj-flex-item">
+                        <i class="fa fa-cloud-upload" aria-hidden="true" style="color:#007acc"></i>
+                        <span class="mainPageTitle"> Load Data</span>
+                    </div>
+                    <div class="oj-flex-item txtRight">
+                        <span on-click="[[closeLoadDailog]]" class="txtRight">
+                            <i class="fa fa-times-circle-o" style="color:red;font-size:20px;"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div slot="body">
+                <oj-defer>
+                    <div class="oj-flex">
+                      
+                        <div class="oj-flex-item oj-md-12">
+                          
+                                <oj-radioset value="{{loadType}}" class="oj-choice-direction-row">
+                                    <oj-option value="external">Data Load Using Oracle External Table</oj-option>
+                                    <oj-option value="manual">Data Load Using Database Procedure</oj-option>
+                                </oj-radioset>
+                            
+                        </div>
+                      
+                    </div>
+                    <div class="oj-flex">
+                        <div class="oj-flex-item oj-md-2"></div>
+                        <div class="oj-flex-item oj-md-5">
+                            <oj-form-layout max-columns="3" label-edge="top" direction="row" style="padding: 5px;">
+                                <oj-input-text placeholder="[[riteUTils.riteLbl.batchName]]"
+                                    label-hint="[[riteUTils.riteLbl.batchName]]" value="{{batchName}}"
+                                    required></oj-input-text>
+                            </oj-form-layout>
+                        </div>
+                        <div class="oj-flex-item oj-md-3">
+                            <div style="margin-top:35px;">
+                                <oj-file-picker class='oj-filepicker-custom' select-on='click'
+                                    on-oj-select='[[UploadForLoaddata]]'>
+                                    <oj-button chroming="solid" class="demo-button-blue" slot='trigger'>
+                                        <i class="fa fa-upload"></i> Upload
+                                    </oj-button>
+                                </oj-file-picker>
+                            </div>
+                        </div>
+                        <div class="oj-flex-item oj-md-2"></div>
+                    </div>
+                </oj-defer>
+            </div>
+        </oj-dialog>
+
+        <oj-dialog id="clumnDialog" aria-describedby="desc">
+            <div slot="header">
+                <div class="oj-flex">
+                    <div class="oj-flex-item">
+                        <span class="mainPageTitle">Insert Columns</span>
+                    </div>
+                    <div class="oj-flex-item txtRight">
+                        <span on-click="[[closeclumnDailog]]" class="txtRight">
+                            <i class="fa fa-times-circle-o" style="color:red;font-size:20px;"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div slot="body">
+
+                <oj-form-layout max-columns="3" label-edge="top" direction="row" style="padding: 5px;">
+                    <oj-select-single label-hint="[[riteUTils.riteLbl.opttype]]" data="[[opttypedata]]"
+                        placeholder="[[riteUTils.riteLbl.opttype]]" on-value-changed="[[optTypeValueChange]]"
+                        value="{{opttype}}" required></oj-select-single>
+
+                    <oj-bind-if test='[[opttype()=="INSERT"]]'>
+                        <oj-input-text placeholder="[[riteUTils.riteLbl.columnName]]"
+                            label-hint="[[riteUTils.riteLbl.columnName]]" value="{{columnName}}"
+                            on-raw-value-changed="[[clumnNameChanged]]" required></oj-input-text>
+                    </oj-bind-if>
+
+                    <oj-bind-if test='[[opttype()=="DELETE"]]'>
+                        <oj-select-single value="{{delColumn}}" placeholder="[[riteUTils.riteLbl.columnName]]"
+                            label-hint="[[riteUTils.riteLbl.columnName]]" data="[[deleteClmnData]]">
+                        </oj-select-single>
+                    </oj-bind-if>
+
+                    <oj-input-number step="0" value="{{sequence}}" disabled="[[sequenceDisabled]]"
+                        on-keypress="[[eatNonNumbers]]" label-hint="[[riteUTils.riteLbl.sequence]]"></oj-input-number>
+
+
+                </oj-form-layout>
+                <div class="oj-flex">
+                    <div class="oj-flex-item txtCenter">
+
+                        <oj-bind-if test='[[opttype()=="INSERT"]]'>
+                            <oj-button class="demo-button-blue txtRight" on-oj-action="[[saveUpdateColumns]]"
+                                chroming="solid">
+                                <i class="fa fa-save"></i> Save
+                            </oj-button>
+
+                        </oj-bind-if>
+                        <oj-bind-if test='[[opttype()=="DELETE"]]'>
+                            <oj-button class="demo-button-blue txtRight" on-oj-action="[[saveUpdateColumns]]"
+                                chroming="solid">
+                                <i class="fa fa-save"></i> Delete
+                            </oj-button>
+                        </oj-bind-if>
+                    </div>
+                </div>
+
+            </div>
+        </oj-dialog>
+        <oj-dialog id="srchDailog" dialog-title="" aria-describedby="desc">
+            <div slot="header" class="txtRight">
+                <span on-click="[[closeSrchDailog]]">
+                    <i class="fa fa-times-circle-o" style="color:red;font-size:20px;"></i>
+                </span>
+            </div>
+            <div slot="body">
+                <oj-defer>
+                    <div class="oj-flex">
+                        <div class="oj-flex-item oj-md-8 mainPageTitle">Search Source Template</div>
+                        <div class="oj-flex-item oj-md-4 txtRight">
+                            <oj-input-text style="width:15vw;margin:3px;" id="filter" value='{{srchfilter}}'
+                                on-raw-value-changed="[[searchanyvalueChanged]]">
+                                <div slot="start" class="oj-text-field-start-end-icon fa fa-search" role="img"></div>
+                            </oj-input-text>
+                        </div>
+                    </div>
+                    <div class="oj-flex oj-sm-12">
+                        <oj-table id="table" aria-label="src table" data="[[searchdataprovider]]" layout="fixed"
+                            on-selection-changed='{{selectionListener}}' selection-mode='{"row": "single"}'
+                            style="width:100%;height:350px;" scroll-policy="loadMoreOnScroll" columns='[                        
+
+
+                            {"headerText": "Template", 
+                             "field": "templateName",
+                             "resizable": "enabled",
+                             "id": "templateName"}, 
+
+                             {"headerText": "Template Code", 
+                             "field": "templateCode",
+                             "resizable": "enabled",
+                             "id": "templateCode"},
+                             {"headerText": "Project Name", 
+                             "field": "projectName",
+                             "resizable": "enabled",
+                             "id": "projectName"},
+
+
+                             {"headerText": "Parent Object Name", 
+                             "field": "parentObjectCode",
+                             "resizable": "enabled",
+                             "id": "parentObjectCode"},
+
+                             {"headerText": "Object Name", 
+                             "field": "objectCode",
+                             "resizable": "enabled",
+                             "id": "objectCode"},
+
+                             {"headerText": "MetaData Table Name", 
+                             "field": "metaDataTableName",
+                             "resizable": "enabled",
+                             "id": "metaDataTableName"} 
+
+
+                             ]' class="demo-table-container"></oj-table>
+                    </div>
+                </oj-defer>
+            </div>
+        </oj-dialog>
+    </div>
+
+    <div class="oj-flex">
+        <div class="oj-flex-item oj-md-4">
+            <span class="mainPageTitle">
+                <i class="fa fa-empire filter" aria-hidden="true"></i> Source Template </span>
+        </div>
+        <div class="oj-flex-item oj-md-4">
+
+        </div>
+        <div class="oj-flex-item oj-md-4 txtRight oj-sm-only-hide">
+            <span class="brdcrmbs"> ConvertRite > Conversion Workbench > Source Template </span>
+        </div>
+
+    </div>
+    <hr>
+    <div class="oj-flex">
+        <div class="oj-flex-item">
+            <div class="pageTitle"><i class="fa fa-snowflake-o filter" aria-hidden="true"></i> Template Header</div>
+        </div>
+        <div class="oj-flex-item txtRight">
+            <oj-button class="demo-button-blue" on-oj-action="[[showSrchDailog]]" chroming="solid">
+                <i class="fa fa-search"></i>
+            </oj-button>
+            <oj-button class="demo-button-blue" chroming="solid" on-oj-action="[[resetSourceTemplate]]">
+                <i class="fa fa-plus"></i>
+            </oj-button>
+        </div>
+    </div>
+    <hr>
+    <div class="oj-flex">
+        <div class="oj-flex-item">
+            <oj-validation-group id="tracker" valid="{{groupValid}}">
+                <oj-form-layout max-columns="6" label-edge="top" direction="row">
+
+                    <oj-input-text disabled="[[templateid()!=='0']]" :class="[[templateid()!== '0'?'disable':'']]"
+                        validators="[[templateNameValidator]]" value="{{templatename}}"
+                        label-hint="[[riteUTils.riteLbl.templateName]]" placeholder="Template Name"
+                        required></oj-input-text>
+
+                    <oj-input-text disabled="[[templateid()!=='0']]" :class="[[templateid()!== '0'?'disable':'']]"
+                        value="{{templateCode}}" placeholder="[[riteUTils.riteLbl.templateCode]]"
+                        label-hint="[[riteUTils.riteLbl.templateCode]]" on-raw-value-changed="[[checkSpaces]]"
+                        validators="[[templateCodeValidator]]" required></oj-input-text>
+
+                  
+
+                    <oj-bind-if test='[[templateid() === "0"]]'>
+                        <oj-select-single label-hint="[[riteUTils.riteLbl.projectName]]" data="[[projectNamedata]]"
+                            :class="[[templateid()!== '0'?'disable':'']]" placeholder="Project Name"
+                            value="{{projectId}}" on-value-changed="[[projnameValueChange]]" required>
+                        </oj-select-single>
+                    </oj-bind-if>
+
+                    <oj-bind-if test='[[templateid() !== "0"]]'>
+                        <oj-input-text class="inputbox disable" disabled="true"
+                            label-hint="[[riteUTils.riteLbl.projectName]]" value="{{projectname}}"></oj-input-text>
+                    </oj-bind-if>
+
+
+                    <oj-bind-if test='[[templateid() === "0"]]'>
+                        <oj-select-single :class="[[pobjcodedisabled()?'disable':'']]" required
+                            label-hint="[[riteUTils.riteLbl.parentObject]]" data="[[parentobjectdata]]"
+                            value="{{parentObjectId}}" placeholder="Parent Object Code"
+                            on-value-changed="[[pobjCodeValueChange]]">
+                        </oj-select-single>
+                    </oj-bind-if>
+
+                    <oj-bind-if test='[[templateid() !== "0"]]'>
+                        <oj-input-text class="inputbox disable" disabled="true"
+                            label-hint="[[riteUTils.riteLbl.parentObject]]"
+                            value="{{parentobjectcode}}"></oj-input-text>
+                    </oj-bind-if>
+
+                    <oj-bind-if test='[[templateid() === "0"]]'>
+                        <oj-select-single :class="[[pobjcodedisabled()?'disable':'']]"
+                            label-hint="[[riteUTils.riteLbl.objectCode]]" placeholder="Object Code" required
+                            data="[[objectdata]]" value="{{objectId}}" on-value-changed="[[objCodeValueChange]]">
+                        </oj-select-single>
+                    </oj-bind-if>
+                    <oj-bind-if test='[[templateid() !== "0"]]'>
+                        <oj-input-text class="inputbox disable" disabled="true"
+                            label-hint="[[riteUTils.riteLbl.objectCode]]" value="{{objectcode}}"></oj-input-text>
+                    </oj-bind-if>
+                    <oj-bind-if test='[[templateid() === "0"]]'>
+                        <oj-select-single :class="[[clouddatatabdisabled()?'disable':'']]" required
+                            label-hint="[[riteUTils.riteLbl.metaDataTableName]]"
+                            placeholder="[[riteUTils.riteLbl.metaDataTableName]]" data="[[clouddatatablenamedata]]"
+                            value="{{metaDataTableId}}" on-value-changed="[[metaDataTabNameChange]]">
+                        </oj-select-single>
+                    </oj-bind-if>
+                    <oj-bind-if test='[[templateid() !== "0"]]'>
+                        <oj-input-text class="inputbox disable" disabled="true"
+                            label-hint="[[riteUTils.riteLbl.metaDataTableName]]"
+                            value="{{clouddatatable}}"></oj-input-text>
+                    </oj-bind-if>
+                </oj-form-layout>
+            </oj-validation-group>
+        </div>
+        <div style="width:30px;float:right">
+            <div class="float srcbtn" id="go" on-click="[[showViewPopup]]">
+                <i class="fa fa-table my-float"></i>
+            </div>
+        </div>
+    </div>
+    <div class="oj-flex btnmargin">
+        <div class="oj-flex-item oj-md-2 oj-sm-2 txtLeft">
+            <div class="pageTitle"><i class="fa fa-snowflake-o filter" aria-hidden="true"></i> Template Lines</div>
+        </div>
+        <div class="oj-flex-item oj-md-8 oj-sm-8 txtCenter">
+            <oj-bind-if test="[[btnLbl()=='Save']]">
+                <oj-button class="demo-button-blue" on-oj-action="[[saveMsg]]" chroming="solid">
+                    <i class="fa fa-save"></i> Save
+                </oj-button>
+            </oj-bind-if>
+            <oj-bind-if test="[[btnLbl()=='Update']]">
+                <oj-button class="demo-button-blue" on-oj-action="[[saveMsg]]" chroming="solid">
+                    <i class="fa fa-save"></i> Update
+                </oj-button>
+            </oj-bind-if>
+
+            <!-- <oj-button class="demo-button-blue" chroming="solid" on-oj-action="[[importColumns]]">
+                <i class="fa fa-download"></i> Import Columns
+            </oj-button> -->
+            <oj-button class="demo-button-blue" chroming="solid" on-oj-action="[[createStagingTable]]">
+                <i class="fa fa-table"></i> Create Table
+            </oj-button>
+            <oj-button class="demo-button-blue" chroming="solid" on-oj-action="[[loadSourceDialog]]"
+                disabled="[[loadSourceDisabled]]">
+                <i class="fa fa-database" style="padding:5px;"></i>Load Data
+            </oj-button>
+
+            <oj-button class="demo-button-blue" on-oj-action="[[openCheckDupDailog]]" chroming="solid">
+                <i class="fa fa-check"></i> Duplicates
+            </oj-button>
+        </div>
+        <div class="oj-flex-item txtRight">
+            <!-- <span on-click="[[openclumnDailog]]"><i class="filter fa fa-pencil-square-o" aria-hidden="true"></i></span>
+            <span><i class="filter fa fa-filter" aria-hidden="true"></i></span>
+            <span><i class="filter fa fa-download" aria-hidden="true"></i></span> -->
+            <oj-button class="demo-button-blue" on-oj-action="[[openclumnDailog]]" chroming="solid">
+                <i class="fa fa-pencil-square-o"></i>
+            </oj-button>
+
+        </div>
+
+    </div>
+
+    <div class="oj-flex">
+
+        <div class="oj-flex-item oj-sm-12">
+            <div id="componentDemoContent" style="margin-top:10px;width: 1px; min-width: 100%;overflow: auto;">
+                <oj-table id="configTable" aria-label="license Table" data="[[dataprovider]]"
+                    style="max-height: calc(100vh - 310px);width:100%;" edit-mode='rowEdit' edit-row='{{editRow}}'
+                    dnd='{"reorder": {"columns": "enabled"}}' scroll-policy="loadMoreOnScroll"
+                    scroll-position="{{scrollPos}}" on-oj-before-row-edit='[[beforeRowEditListener]]'
+                    on-oj-before-row-edit-end='[[beforeRowEditEndListener]]' scroll-policy-options='{"fetchSize": 150}'
+                    columns='[
+                              {"headerText": "S.No", 
+                              "field": "rowId",
+                              "headerClassName": "oj-sm-only-hide",
+                              "className": "oj-sm-only-hide",
+                              "resizable": "enabled",
+                              "id": "rowId"},
+
+                              {"headerText": "Column Name", 
+                              "field": "columnName",                              
+                              "resizable": "enabled",
+                              "id": "columnName","template": "columnName"},
+                             
+                              {"headerText": "Select", 
+                              "field": "selected",
+                              "headerClassName": "oj-sm-only-hide",
+                              "className": "oj-sm-only-hide",
+                              "resizable": "enabled",
+                              "id": "select","template": "select"},
+                             
+                              {"headerText": "Sequence", 
+                              "field": "seq",
+                              "headerClassName": "oj-sm-only-hide",
+                              "className": "oj-sm-only-hide",
+                              "resizable": "enabled",
+                              "id": "seq","template": "seq"} ,
+
+                              {"headerText": "Trans Ref", 
+                              "field": "uniqueTransRef",
+                              "headerClassName": "oj-sm-only-hide",
+                              "className": "oj-sm-only-hide",
+                              "resizable": "enabled",
+                              "id": "uniqueTransRef","template": "uniqueTransRef"},
+
+                              {"headerText": "Column Type", 
+                              "field": "columnType",
+                              "headerClassName": "oj-sm-only-hide",
+                              "className": "oj-sm-only-hide",
+                              "resizable": "enabled",
+                              "id": "columnType","template": "columnType"},
+                              
+                              {"headerText": "Width", 
+                              "field": "width",
+                              "headerClassName": "oj-sm-only-hide",
+                              "className": "oj-sm-only-hide",
+                              "resizable": "enabled",
+                              "id": "width","template": "width"}
+
+                            
+                             
+                            
+                            
+                               ]' class="demo-table-container">
+
+                    <template slot="columnName" data-oj-as="cell">
+                        <oj-bind-if test='[[cell.mode=="navigation"]]'>
+                            <oj-bind-text value="[[cell.data]]"></oj-bind-text>
+                        </oj-bind-if>
+                        <oj-bind-if test='[[cell.mode=="edit"]]'>
+                            <oj-input-text value='{{rowData.columnName}}' class="editable"></oj-input-text>
+                        </oj-bind-if>
+                    </template>
+
+                    <template slot="select" data-oj-as="cell">
+                        <oj-bind-if test='[[cell.mode=="navigation"]]'>
+                            <div>
+                                <oj-bind-if test='[[cell.data ==  "checked"]]'>
+                                    <span class="fa fa-check fa-lg" role="img" aria-label="error"
+                                        style="color:#007acc;"></span>
+                                </oj-bind-if>
+                            </div>
+                        </oj-bind-if>
+                        <oj-bind-if test='[[cell.mode=="edit"]]'>
+                            <oj-checkboxset id="clt3" value="{{rowData.selected}}" style="margin-top : 20px!important;margin-left: 60px;"
+                                class="oj-choice-direction-row editable">
+                                <oj-option value="checked"></oj-option>
+                            </oj-checkboxset>
+
+                        </oj-bind-if>
+
+                    </template>
+                    <template slot="uniqueTransRef" data-oj-as="cell">
+                        <oj-bind-if test='[[cell.mode=="navigation"]]'>
+                            <div>
+                                <oj-bind-if test='[[cell.data ==  "checked"]]'>
+                                    <span class="fa fa-check fa-lg" role="img" aria-label="error"
+                                        style="color:#007acc;"></span>
+                                </oj-bind-if>
+                            </div>
+                        </oj-bind-if>
+                        <oj-bind-if test='[[cell.mode=="edit"]]'>
+                            <oj-checkboxset id="clt3" value="{{rowData.uniqueTransRef}}" style="margin-top : 20px!important;margin-left: 70px;"
+                                class="oj-choice-direction-row editable">
+                                <oj-option value="checked"></oj-option>
+                            </oj-checkboxset>
+
+                        </oj-bind-if>
+
+                    </template>
+
+
+                    <template slot="seq" data-oj-as="cell">
+                        <oj-bind-if test='[[cell.mode=="navigation"]]'>
+                            <oj-bind-text value="[[cell.data]]"></oj-bind-text>
+                        </oj-bind-if>
+                        <oj-bind-if test='[[cell.mode=="edit"]]'>
+                            <oj-input-text value='{{rowData.seq}}' class="editable"></oj-input-text>
+                        </oj-bind-if>
+                    </template>
+
+                    <template slot="columnType" data-oj-as="cell">
+                        <oj-bind-text value="[[cell.data]]"></oj-bind-text>
+                        </oj-bind-if>
+                    </template>
+                    <template slot="width" data-oj-as="cell">
+                        <oj-bind-if test='[[cell.mode=="navigation"]]'>
+                            <oj-bind-text value="[[cell.data]]"></oj-bind-text>
+                        </oj-bind-if>
+                        <oj-bind-if test='[[cell.mode=="edit"]]'>
+                            <oj-input-text value='{{rowData.width}}' class="editable"></oj-input-text>
+                        </oj-bind-if>
+                    </template>
+
+                </oj-table>
+                <div class="txtCenter">
+                    <div><i class="fa fa-angle-down" style="color:black" aria-hidden="true"></i></div>
+                    <div class="head31" on-click="[[loadMore]]">Load More</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

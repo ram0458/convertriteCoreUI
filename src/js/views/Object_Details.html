@@ -1,0 +1,305 @@
+<!--
+ Copyright (c) 2014, 2023, Oracle and/or its affiliates.
+ Licensed under The Universal Permissive License (UPL), Version 1.0
+ as shown at https://oss.oracle.com/licenses/upl/
+ -->
+ <div class="oj-hybrid-padding">
+  <oj-messages messages="[[messagesDataProvider]]" display="notification"
+      position="[[riteUTils.positions]]"></oj-messages>
+
+  <div id="dialogWrapper">
+    <oj-dialog class="objDailog" id="objDailog" dialog-title="Object Setup Data">
+        
+        <div slot="body">
+            <hr>
+        <div class="oj-flex">
+            <div class="oj-flex-item oj-sm-1"></div>
+            <div class="oj-flex-item oj-sm-10">
+
+           <table class="viewTxt txtLeft viewTxt1" style="width:100%">
+            <tr>
+                <td>Object Name</td> <td>:</td> 
+                <td class="txtLeft">
+                    <oj-bind-text value="[[objectName]]"></oj-bind-text>
+                </td>
+                <td>User Object Name</td> <td>:</td> 
+                <td class="txtLeft">
+                    <oj-bind-text value="[[userObjectName]]"></oj-bind-text>
+                </td>                
+            </tr>  
+            <tr>
+                <td>Module</td> <td>:</td> <td class="txtLeft">
+                    <oj-bind-text value="[[moduleCode]]"></oj-bind-text>
+                </td>
+                <td>Parent Object</td> <td>:</td> 
+                <td class="txtLeft">
+                    <oj-bind-text value="[[parentObjectId]]"></oj-bind-text>
+                </td>
+              
+            </tr> 
+            <tr>
+                
+                <td>FBDI Sheet</td> <td>:</td> <td class="txtLeft">
+                    <oj-bind-text value="[[fbdiSheet]]"></oj-bind-text>
+                </td>
+                <td>HDL Sheet</td> <td>:</td> 
+                <td class="txtLeft">
+                    <oj-bind-text value="[[hdlSheet]]"></oj-bind-text>
+                </td>
+            </tr>        
+           </table>
+        </div>
+           <div class="oj-flex-item oj-sm-1"></div>
+        </div>
+        <div class="oj-flex">
+            <div class="oj-flex-item oj-sm-2"></div>
+            <div class="oj-flex-item oj-sm-8">    
+            </div>
+            <div class="oj-flex-item oj-sm-2" style="margin-left:-8px;">
+                <oj-button class="demo-button-blue" on-oj-action="[[addNewRecord]]" chroming="solid">
+                    <i class="fa fa-plus-circle"></i>
+                </oj-button>
+                <oj-button class="demo-button-blue" on-oj-action="[[saveObjectInfo]]" chroming="solid">
+                    <i class="fa fa-save"></i>
+                </oj-button>
+    
+            </div>
+    
+        </div>
+        <div class="oj-flex ">
+            <div class="oj-flex-item oj-sm-1"></div>
+            <div class="oj-flex-item oj-sm-10">
+                <oj-table id="mappingtable" aria-label="mappingtable" data="[[dataprovider]]" edit-mode='rowEdit'
+                    edit-row='{{editRow}}' style="width:100%;height:auto;max-height:200px;" scroll-policy="loadMoreOnScroll"
+                    on-oj-before-row-edit='[[beforeRowEditListener]]' scroll-position="{{scrollPos1}}"
+                    on-oj-before-row-edit-end='[[beforeRowEditEndListener]]' scroll-policy-options='{"fetchSize": 20}'
+                    columns='[
+                              {"headerText": "S.No.", 
+                              "field": "rowId",
+                              "headerClassName": "oj-sm-only-hide",
+                              "className": "oj-sm-only-hide",
+                              "resizable": "enabled",
+                              "id": "rowId"},
+    
+                              {"headerText": "Type", 
+                              "field": "type",                        
+                              "resizable": "enabled",
+                              "id": "Type","template":"Type"},
+    
+                           
+                              {"headerText": "Value", 
+                              "field": "value",                          
+                              "resizable": "enabled",
+                              "id": "Value","template":"Value"},
+    
+                              {"headerText": "Description", 
+                              "field": "description",                          
+                              "resizable": "enabled",
+                               "className": "oj-sm-down-hide",
+                              "id": "Description","template":"Description"},
+        
+                              {"headerText": "Action",
+                              "field": "rowId",
+                              "style":"padding-top: 0px; padding-bottom: 0px;",
+                              "headerClassName": "oj-helper-text-align-end",
+                              "className": "oj-helper-text-align-end",
+                              "template": "actionTemplate",
+                              "id": "action"}
+                                                   
+                            
+                               ]' class="demo-table-container">
+    
+                    <template slot="Type" data-oj-as="cell">
+                        <oj-bind-if test='[[cell.mode=="navigation"]]'>
+                            <oj-bind-text value="[[cell.data]]"></oj-bind-text>
+                        </oj-bind-if>
+                        <oj-bind-if test='[[cell.mode=="edit"]]'>
+                            <oj-input-text id="it1" value="{{rowData.type}}" class="editable"></oj-input-text>
+                        </oj-bind-if>
+                    </template>
+                    
+                    <template slot="Value" data-oj-as="cell">
+                        <oj-bind-if test='[[cell.mode=="navigation"]]'>
+                            <oj-bind-text value="[[cell.data]]"></oj-bind-text>
+                        </oj-bind-if>
+                        <oj-bind-if test='[[cell.mode=="edit"]]'>
+                            <oj-input-text id="it1" value="{{rowData.value}}" class="editable"></oj-input-text>
+
+                        </oj-bind-if>
+                    </template>
+                    <template slot="Description" data-oj-as="cell">
+                        <oj-bind-if test='[[cell.mode=="navigation"]]'>
+                            <oj-bind-text value="[[cell.data]]"></oj-bind-text>
+                        </oj-bind-if>
+                        <oj-bind-if test='[[cell.mode=="edit"]]'>
+                            <oj-input-text id="it1" value="{{rowData.description}}" class="editable"></oj-input-text>
+                        </oj-bind-if>
+                    </template>
+                   
+                    <template slot="actionTemplate" data-oj-as="cell">
+                        <oj-bind-if test='[[cell.mode=="navigation"]]'>
+                            <oj-button data-oj-clickthrough="disabled" class="oj-button-sm" display="icons"
+                                chroming="borderless" on-oj-action="[[handleUpdate]]">
+                                <span slot="startIcon" class="oj-ux-ico-batch-edit">
+    
+                                </span>
+                                Edit
+                            </oj-button>
+                            <oj-button data-oj-clickthrough="disabled" class="oj-button-sm" display="icons"
+                                chroming="borderless" on-oj-action="[[handleDelete]]">
+                                <span slot="startIcon" class="oj-ux-ico-trash">
+    
+                                </span>
+                                <oj-bind-text value="[[cell.data]]"></oj-bind-text>
+                            </oj-button>
+                        </oj-bind-if>
+    
+                        <oj-bind-if test='[[cell.mode=="edit"]]'>
+                            <oj-toolbar data-oj-clickthrough="disabled" chroming="borderless"
+                                class="oj-sm-padding-0-vertical oj-sm-padding-4x-end oj-sm-float-end">
+                                <oj-button display="icons" class="oj-button-sm" on-oj-action="[[handleDone]]"
+                                    data-oj-clickthrough="disabled">
+                                    <span slot="startIcon" class="oj-ux-ico-check"></span>
+                                    Save
+                                </oj-button>
+                                <oj-button display="icons" class="oj-button-sm" on-oj-action="[[handleCancel]]"
+                                    data-oj-clickthrough="disabled">
+                                    <span slot="startIcon" class="oj-ux-ico-multiply"></span>
+                                    Cancel
+                                </oj-button>
+                            </oj-toolbar>
+                        </oj-bind-if>
+                    </template>
+    
+                </oj-table>
+                <div class="txtCenter">
+                    <div><i class="fa fa-angle-down" style="color:black" aria-hidden="true"></i></div>
+                    <div class="head31" on-click="[[loadMore]]">Load More</div>
+                </div>
+            </div>
+    
+            <div class="oj-flex-item oj-sm-1"></div>
+        </div>
+        </div>
+     
+        <div slot="footer">
+            
+            <oj-button class="demo-button-blue" chroming="solid" on-oj-action="[[objclose]]">Close
+            </oj-button>
+            
+        </div>
+    </oj-dialog>
+    <oj-dialog id="confirmDailog" dialog-title="" aria-describedby="desc">
+        <div slot="header" class="txtRight">
+            <span on-click="[[cancelDelete]]">
+                <i class="fa fa-times-circle-o" style="color:red;font-size:20px;"></i>
+            </span>
+        </div>
+        <div slot="body">
+            <div class="oj-sm-12">
+                <div>
+                    <span class="pageTitle">
+                        <i class="fa fa-empire filter" aria-hidden="true"></i>Conformation</span>
+                </div>
+                <div style="padding:10px">
+                    Are you sure you want to delete ?
+                </div>
+                <div class="txtRight">
+                    <oj-button class="demo-button-blue" on-oj-action="[[okDeleteConformation]]" chroming="solid">
+                        Ok
+                    </oj-button>
+                    <oj-button class="demo-button-blue" on-oj-action="[[cancelDelete]]" chroming="solid">
+                        Cancel
+                    </oj-button>
+                </div>
+            </div>
+        </div>
+    </oj-dialog>
+</div>
+  <div class="oj-flex">
+      <div class="oj-flex-item oj-sm-4">
+          <span class="mainPageTitle">
+            <i class="fa fa-eercast filter"></i>
+            Object Details</span>
+      </div>
+      <div class="oj-flex-item oj-sm-4">
+      </div>
+      <div class="oj-flex-item oj-sm-4 txtRight">
+          <span class="brdcrmbs"> ConvertRite > Cloud Configuration > Object Details</span>
+      </div>
+  </div>
+  <hr>
+
+  <div class="oj-flex">
+    <div class="oj-flex-item oj-sm-1 oj-sm-only-hide"></div>
+    <div class="oj-flex-item oj-md-10 oj-sm-12">
+        <div class="txtRight">
+            <oj-input-text style="width:15vw;margin:5px;" id="filter" value='{{srchfilter}}' autocomplete="off" placeholder="[[riteUTils.riteLbl.search]]" on-raw-value-changed="[[searchanyvalueChanged]]">
+             <div slot="start" class="oj-text-field-start-end-icon fa fa-search" role="img"></div>
+         </oj-input-text>
+         </div>
+    </div>
+    <div class="oj-flex-item oj-sm-1 oj-sm-only-hide"></div>
+  </div>
+  
+ 
+ 
+  <div class="oj-flex">
+    <div class="oj-flex-item oj-sm-1 oj-sm-only-hide"></div>
+      <div class="oj-flex-item oj-md-10 oj-sm-12">
+          <div id="clientAdmin" style="width: 1px; min-width: 100%;overflow-x: hidden;">
+              <oj-table id="table" aria-label="license Table" data="[[searchdataprovider]]"
+                  style="width:100%;height:420px;" scroll-position="{{scrollPos}}"
+                  selection-mode='{"row": "single", "column": "single"}' dnd='{"reorder": {"columns": "enabled"}}'
+                  scroll-policy="loadMoreOnScroll" scroll-policy-options='{"fetchSize": 20}' columns='[
+                      {"headerText": "S.No.", 
+                       "field": "SNo",
+                       "headerClassName": "oj-sm-only-hide",
+                       "className": "oj-sm-only-hide",
+                       "resizable": "enabled",
+                       "id": "sno"},
+                      {"headerText": "Object Name", 
+                       "field": "objectName",
+                       "resizable": "enabled",
+                       "id": "objectName"},
+
+                       {"headerText": "User Object Name", 
+                       "field": "userObjectName",
+                       "headerClassName": "oj-md-down-hide",
+                       "className": "oj-md-down-hide",
+                       "resizable": "enabled",
+                       "id": "userObjectName"},
+
+                      {"headerText": "Module", 
+                       "field": "moduleCode",
+                       "headerClassName": "oj-sm-only-hide",
+                       "className": "oj-sm-only-hide",
+                       "resizable": "enabled",
+                       "id": "moduleCode"},
+
+                       {"field": "objectId",
+                       "headerText": "Action",
+                       "headerClassName": "oj-md-down-hide",
+                       "className": "oj-md-down-hide",
+                        "template":"action"
+                      }
+                     
+                       ]' class="demo-table-container">
+
+                  <template slot="action" data-oj-as="cell">
+                      <span class="edtbtn" on-click="[[editObjectConfig]]">
+                          <span class="hide"><oj-bind-text value="[[cell.data]]"></oj-bind-text></span>
+                          <img :src="[['css/images/ritee.png']]" style="width:15px;height:15px;" >
+                      </span>
+                     
+                  </template>
+              </oj-table>
+              <div class="txtCenter">
+                  <div><i class="fa fa-angle-down filter" aria-hidden="true"></i></div>
+                  <div class="head31" on-click="[[loadMore]]">Load More</div>
+              </div>
+          </div>
+      </div>
+      <div class="oj-flex-item oj-sm-1 oj-sm-only-hide"></div>
+  </div>
+</div>

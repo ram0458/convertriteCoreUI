@@ -1,0 +1,231 @@
+<!--
+ Copyright (c) 2014, 2023, Oracle and/or its affiliates.
+ Licensed under The Universal Permissive License (UPL), Version 1.0
+ as shown at https://oss.oracle.com/licenses/upl/
+ -->
+<div class="oj-hybrid-padding">
+    <oj-messages messages="[[messagesDataProvider]]" display="notification"
+        position="[[riteUTils.positions]]"></oj-messages>
+    
+   
+    <div id="srch">
+       
+        <oj-dialog id="srchDailog" dialog-title="" aria-describedby="desc"> 
+            <div slot="header" class="txtRight">
+                <span  on-click="[[closeSrchDailog]]">             
+                    <i class="fa fa-times-circle-o" style="color:red;font-size:20px;"></i>
+                </span>   
+            </div>
+            <div slot="body">
+                <oj-defer>
+                    <div class="oj-flex">
+                        <div class="oj-flex-item oj-md-8">Search Data Sync</div>
+                        <div class="oj-flex-item oj-md-4 txtRight">
+                            <oj-input-text style="width:15vw;margin:3px;"    id="filter" value='{{srchfilter}}'>
+                                <div slot="start" class="oj-text-field-start-end-icon fa fa-search" role="img"></div>
+                            </oj-input-text>   
+                        </div>
+                    </div>                    
+                    <div class="oj-flex oj-sm-12">
+                        <oj-table id="table" aria-label="src table" data="[[searchdataprovider]]"
+                        layout="fixed"
+                            style="width:100%;height:250px;" scroll-policy="loadMoreOnScroll" columns='[                        
+                            {"headerText": "Pod Name", 
+                              "field": "podName",                              
+                              "resizable": "enabled",
+                              "id": "podName"},
+                             
+                              {"headerText": "Destination", 
+                              "field": "destination",                              
+                              "resizable": "enabled",
+                              "id": "destination"},
+                             
+                              {"headerText": "Destination Table", 
+                              "field": "destinationTable",
+                              "resizable": "enabled",
+                              "id": "destinationTable"},
+                             
+                              {"headerText": "Sql Query", 
+                              "field": "sqlQuery",                           
+                              "resizable": "enabled",
+                              "id": "sqlQuery"} ,
+
+                              {"headerText": "Metadata", 
+                              "field": "metaData",                           
+                              "resizable": "enabled",
+                              "id": "metaData"}
+                             ]' class="demo-table-container"></oj-table>
+                    </div>
+                </oj-defer>
+            </div>
+        </oj-dialog>
+    </div>
+    <div class="oj-flex">
+        <div class="oj-flex-item oj-md-4">
+            <span class="pageTitle">
+                <i class="fa fa-empire filter" aria-hidden="true"></i> Data Sync Params</span>
+        </div>
+        <div class="oj-flex-item oj-md-4">
+
+        </div>
+        <div class="oj-flex-item oj-md-4 txtRight oj-sm-only-hide">
+            <span class="brdcrmbs">Conversion Workbench > Data Sync Params</span>
+        </div>
+
+    </div>
+    <hr>
+    <div class="oj-flex">
+        <div class="oj-flex-item">
+            <div class="pageTitle"><i class="fa fa-snowflake-o filter" aria-hidden="true"></i> Data Sync Header</div>
+        </div>
+        <div class="oj-flex-item txtRight">
+            <oj-button class="demo-button-blue" on-oj-action="[[showSrchDailog]]" chroming="solid">
+                <i class="fa fa-search"></i>
+            </oj-button>
+            <oj-button class="demo-button-blue" chroming="solid">
+                <i class="fa fa-plus"></i>
+            </oj-button>
+        </div>
+    </div>
+    <hr>
+    <div class="oj-flex">
+        <div class="oj-flex-item">
+            <oj-validation-group id="tracker" valid="{{groupValid}}">
+                <oj-form-layout max-columns="5" label-edge="top" direction="row">
+                    <oj-select-single label-hint="[[riteUTils.riteLbl.podName]]" data="[[podNamedata]]"
+                        placeholder="Pod Name" value="{{podId}}" on-value-changed="[[podnameValueChange]]" required>
+                    </oj-select-single>
+    
+        
+                    <oj-select-single label-hint="[[riteUTils.riteLbl.destination]]" data="[[destNamedata]]"
+                        placeholder="Destination" value="{{destination}}" on-value-changed="[[destnameValueChange]]"
+                        required>
+                    </oj-select-single>
+
+                    <oj-input-text value="{{destTable}}" label-hint="[[riteUTils.riteLbl.destinationTable]]"
+                        placeholder="Destination Table" required></oj-input-text>
+    
+    
+                    <oj-input-text value="{{metaData}}" label-hint="[[riteUTils.riteLbl.metadata]]" placeholder="Metadata"
+                        required></oj-input-text>
+    
+                    <oj-text-area class="inputbox reqinput" label-hint="SQL Query" value="{{sqlquery}}" rows="5"
+                        length.max="20000" style="width: 20vw;margin-left: 0vw;margin-top: 0vh;"
+                        on-raw-value-changed="[[sqlQueryChange]]"></oj-text-area>
+    
+    
+                </oj-form-layout>
+            </oj-validation-group>
+        </div>
+     
+    </div>
+    <div class="oj-flex btnmargin">
+        <div class="oj-flex-item oj-md-4 oj-sm-4 txtLeft">
+            <div class="pageTitle"><i class="fa fa-snowflake-o filter" aria-hidden="true"></i> Data Sync Lines</div>
+        </div>
+        <div class="oj-flex-item oj-md-4 oj-sm-6 txtCenter">
+            <oj-button class="demo-button-blue" chroming="solid" on-oj-action="[saveMsg]">
+                <i class="fa fa-save"></i> Save
+            </oj-button>
+        </div>
+        <div class="oj-flex-item oj-md-4 oj-sm-2 txtRight">
+            <span><i class="filter fa fa-pencil-square-o" aria-hidden="true"></i></span>
+            <span><i class="filter fa fa-filter" aria-hidden="true"></i></span>
+            <span><i class="filter fa fa-download" aria-hidden="true"></i></span>
+        </div>
+    </div>    
+    <div class="oj-flex">
+      
+        <div class="oj-flex-item oj-sm-12">
+            <div id="componentDemoContent" style="margin-top:10px;width: 1px; min-width: 100%;overflow: auto;">
+                <oj-table id="configTable" aria-label="license Table" data="[[dataprovider]]"
+                style="width:100%;height: auto;max-height:150px;"  edit-mode='rowEdit' edit-row='{{editRow}}'
+                dnd='{"reorder": {"columns": "enabled"}}' scroll-policy="loadMoreOnScroll"
+                on-oj-before-row-edit='[[beforeRowEditListener]]' on-oj-before-row-edit-end='[[beforeRowEditEndListener]]'
+                scroll-policy-options='{"fetchSize": 20}' columns='[
+                              {"headerText": "S.No.", 
+                              "field": "SNo",
+                              "headerClassName": "oj-sm-only-hide",
+                              "className": "oj-sm-only-hide",
+                              "resizable": "enabled",
+                              "id": "rowId"},
+
+                              {"headerText": "Pod Name", 
+                              "field": "podName",                              
+                              "resizable": "enabled",
+                              "id": "podName",
+                            "template":"podName"},
+                             
+
+                              {"headerText": "Destination", 
+                              "field": "destination",                              
+                              "resizable": "enabled",
+                              "id": "destination",
+                              "template":"destination"},
+                             
+                              {"headerText": "Destination Table", 
+                              "field": "destinationTable",
+                              "resizable": "enabled",
+                              "id": "destinationTable",
+                              "template":"destinationTable"},
+                             
+                              {"headerText": "Sql Query", 
+                              "field": "sqlQuery",                   
+                              "resizable": "enabled",
+                              "id": "sqlQuery",
+                              "template":"sqlQuery"} ,
+
+                              {"headerText": "Metadata", 
+                              "field": "metaData",                           
+                              "resizable": "enabled",
+                              "id": "metaData",
+                              "template":"metadata"}                             
+                               ]' class="demo-table-container">
+      
+                              
+                               <template slot="podName" data-oj-as="cell">
+                               <oj-bind-text value="[[cell.data]]"></oj-bind-text>
+                    
+                              </template>
+
+                                   
+                              <template slot="destinationTable" data-oj-as="cell">
+                               <oj-bind-text value="[[cell.data]]"></oj-bind-text>
+                    
+                              </template>
+
+                            
+
+                              <template slot="sqlQuery" data-oj-as="cell">
+
+                                <oj-bind-if test='[[cell.mode=="navigation"]]'>
+                                  <oj-bind-text value="[[cell.data]]"></oj-bind-text>
+                                </oj-bind-if>
+                    
+                              </template>
+
+                              <template slot="destination" data-oj-as="cell">
+
+                                <oj-bind-if test='[[cell.mode=="navigation"]]'>
+                                  <oj-bind-text value="[[cell.data]]"></oj-bind-text>
+                                </oj-bind-if>
+                    
+                              </template>
+
+                              <template slot="metadata" data-oj-as="cell">
+
+                                <oj-bind-if test='[[cell.mode=="navigation"]]'>
+                                  <oj-bind-text value="[[cell.data]]"></oj-bind-text>
+                                </oj-bind-if>
+                    
+                              </template>
+                 </oj-table>
+                <div class="txtCenter">
+                    <div><i class="fa fa-angle-down" style="color:black" aria-hidden="true"></i></div>
+                    <div class="head31" on-click="[[loadMore]]">Load More</div>
+                </div>
+            </div>
+        </div>
+      
+    </div>   
+</div>

@@ -1,0 +1,447 @@
+<!--
+ Copyright (c) 2014, 2023, Oracle and/or its affiliates.
+ Licensed under The Universal Permissive License (UPL), Version 1.0
+ as shown at https://oss.oracle.com/licenses/upl/
+ -->
+<div class="oj-hybrid-padding">
+  <oj-messages messages="[[messagesDataProvider]]" display="notification"
+    position="[[riteUTils.positions]]"></oj-messages>
+
+  <oj-dialog id="loadDialog" dialog-title="" aria-describedby="desc">
+    <div slot="header">
+      <div class="oj-flex">
+        <div class="oj-flex-item">
+          <span class="mainPageTitle">Load Source</span>
+        </div>
+        <div class="oj-flex-item txtRight">
+          <span on-click="[[closeLoadDailog]]" class="txtRight">
+            <i class="fa fa-times-circle-o" style="color:red;font-size:20px;"></i>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div slot="body">
+      <div class="oj-flex">
+        <div class="oj-flex-item oj-md-2"></div>
+        <div class="oj-flex-item oj-md-5">
+          <oj-form-layout max-columns="2" label-edge="top" direction="row" style="padding: 5px;">
+            <oj-select-single id="template" value="{{template}}" label-hint="[[riteUTils.riteLbl.selecttemp]]"
+              data="[[templateNameProvider]]" on-value-changed="[[templateNameChange]]">
+            </oj-select-single>
+
+          </oj-form-layout>
+        </div>
+        <div class="oj-flex-item oj-md-3">
+          <div style="margin-top:35px;">
+            <oj-file-picker class='oj-filepicker-custom' select-on='click' on-oj-select='[[fileUploadForSave]]'>
+              <oj-button chroming="solid" class="demo-button-blue" slot='trigger'>
+                <i class="fa fa-upload"></i> Upload
+              </oj-button>
+            </oj-file-picker>
+          </div>
+        </div>
+        <div class="oj-flex-item oj-md-2"></div>
+      </div>
+    </div>
+  </oj-dialog>
+  <div class="oj-flex">
+    <div class="oj-flex-item oj-md-4">
+      <span class="mainPageTitle">
+        <i class="fa fa-cog filter" aria-hidden="true"></i> Load Cockpit </span>
+    </div>
+    <div class="oj-flex-item oj-md-4">
+
+    </div>
+    <div class="oj-flex-item oj-md-4 txtRight oj-sm-only-hide">
+      <span class="brdcrmbs"> ConvertRite > Conversion Workbench > Load Cockpit </span>
+    </div>
+
+  </div>
+  <hr>
+  <div class="oj-flex">
+    <div class="oj-flex-item oj-sm-11"></div>
+    <div class="oj-flex-item oj-sm-1" style="text-align: right;">
+      <oj-button class="demo-button-blue" chroming="solid" on-oj-action="[[resetAll]]">
+        <i class="fa fa-plus"></i>
+      </oj-button>
+    </div>    
+  </div>
+
+  <div class="oj-flex">  
+    <div class="oj-flex-item oj-sm-12">
+      <oj-validation-group id="tracker" valid="{{groupValid}}">
+        <oj-form-layout max-columns="5" label-edge="top" direction="row">
+
+          <oj-select-single label-hint="[[riteUTils.riteLbl.projectName]]" data="[[projectNamedata]]"
+            placeholder="[[riteUTils.riteLbl.projectName]]" value="{{projectName}}"
+            on-value-changed="[[projectNameValueChange]]" required>
+          </oj-select-single>
+
+          <oj-select-single required label-hint="[[riteUTils.riteLbl.parentObject]]" data="[[parentobjectdata]]"
+            value="{{parentObject}}" placeholder="[[riteUTils.riteLbl.parentObject]]"
+            on-value-changed="[[pobjCodeValueChange]]">
+          </oj-select-single>
+
+          <oj-select-single label-hint="[[riteUTils.riteLbl.objectCode]]" placeholder="[[riteUTils.riteLbl.objectCode]]"
+            required data="[[objectdata]]" value="{{object}}" on-value-changed="[[objectValueChange]]">
+          </oj-select-single>
+
+          <oj-input-text placeholder="[[riteUTils.riteLbl.batchName]]" label-hint="[[riteUTils.riteLbl.batchName]]"
+            value="{{batchName}}"></oj-input-text>
+
+          <oj-c-select-multiple id="multcheck" style="width:733px;" item-text="label" value="{{templateName}}"
+            label-hint="[[riteUTils.riteLbl.selecttemp]]" data="[[templateDataProvider]]" on-value-changed="[[templateChange]]">
+          </oj-c-select-multiple>
+        </oj-form-layout>
+      </oj-validation-group>
+    </div>  
+</div>
+<div class="oj-flex btnmargin">
+  <div class="oj-flex-item txtCenter">
+    <oj-button class="demo-button-blue" chroming="solid" on-oj-action="[[loadSourceDialog]]">
+      <i class="fa fa-upload"></i> Load Source Normalize
+      <span>
+        <oj-bind-if test='[[loadSourceDataCompleted()]]'>
+          <i class="oj-ux-ico-check-circle-s" style="color:#37f507;font-size:18px"></i>
+        </oj-bind-if>
+      </span>
+    </oj-button>
+    <oj-button class="demo-button-blue" chroming="solid" on-oj-action="[[ValidationData]]">
+      <i class="fa fa-cog"></i> Transform
+      <span>
+        <oj-bind-if test='[[validationCompleted()]]'>
+          <i class="oj-ux-ico-check-circle-s" style="color:#37f507;font-size:18px"></i>
+        </oj-bind-if>
+      </span>
+    </oj-button>
+    <!-- <oj-button class="demo-button-blue" on-oj-action="[[refresh]]" chroming="solid">
+      <i class="fa fa-refresh"></i> Refresh
+    </oj-button> -->
+    <oj-button class="demo-button-blue" chroming="solid" on-oj-action="[[downloadFbdi]]">
+      <i class="fa fa-download "></i> FBDI
+    </oj-button>
+    <oj-button class="demo-button-blue" chroming="solid" on-oj-action="[[openListener]]">
+      <i class="fa fa-cloud"></i> Cloud Load Import
+      <span>
+        <oj-bind-if test='[[cloudLoadImportCompleted()]]'>
+          <i class="oj-ux-ico-check-circle-s" style="color:#37f507;font-size:18px"></i>
+        </oj-bind-if>
+      </span>
+    </oj-button>
+
+    <span id="popupWrapper">
+      <oj-popup id="popup1">
+        <span class="blink-rainbow">
+          <oj-input-text  label-hint="[[riteUTils.riteLbl.parameters]]"
+            value="{{parameterList}}"></oj-input-text>
+          </span>
+        <span style="margin:10px;float:right">
+          <oj-button chroming="solid" class="demo-button-blue" on-oj-action="[[loadImportActionData]]">
+            Go
+          </oj-button>
+        </span>
+      </oj-popup>
+    </span>
+  </div>
+</div>
+
+<div class="oj-flex">
+    <div class="oj-flex-item oj-sm-1 oj-lg-1"></div>
+  <div class="oj-flex-item oj-sm-10 oj-lg-10">
+    <oj-train id="contrain" class="oj-train-stretch" selected-step="{{currentStepValue}}" steps="[[stepArray]]">
+    </oj-train>
+  </div>
+  <div class="oj-flex-item oj-sm-1 oj-lg-1"></div>
+</div>
+<div class="oj-flex">
+    
+
+    <div class="oj-flex-item oj-sm-12 oj-lg-12">
+  <oj-bind-if test="[[currentStepValue() === 'stp1']]">
+    <div class="pageTitle"><i class="fa fa-snowflake-o filter" aria-hidden="true"></i> Load
+      Source Data Status</div>
+
+    
+      <div id="componentDemoContent" style="overflow: auto;">
+        <oj-table id="custtable" aria-label="Lookup values table" style="max-height: calc(100vh - 230px);width:100%;"
+          selection-mode.row='single' dnd='{"reorder": {"columns": "enabled"}}' scroll-policy='loadMoreOnScroll'
+           scroll-policy-options='{"fetchSize": 50}'
+          data='[[dataProviders]]' edit-mode='none' columns='[
+                    {"headerText": "S.No.", 
+                    "field": "SNo",
+                    "headerClassName": "oj-sm-only-hide",
+                    "className": "oj-sm-only-hide",
+                    "resizable": "enabled",
+                    "id": "sno"},
+                   {"headerText": "Template Name", 
+                    "field": "templateName",
+                    "resizable": "enabled",
+                    "id": "templatname"},
+
+                    {"headerText": "Staging Table", 
+                    "field": "stagingtable",
+                    "headerClassName": "oj-md-down-hide",
+                    "className": "oj-md-down-hide",
+                    "resizable": "enabled",
+                    "id": "parentobject"},
+
+                   {"headerText": "Loaded Records", 
+                    "field": "loadedrecrods",
+                    "headerClassName": "oj-sm-only-hide",
+                    "className": "oj-sm-only-hide",
+                    "resizable": "enabled",
+                    "id": "reqtype"},
+
+                    {"headerText": "Failed Records", 
+                    "field": "failedRecords",
+                    "headerClassName": "oj-sm-only-hide",
+                    "className": "oj-sm-only-hide",
+                    "resizable": "enabled",
+                    "id": "reqtype"},
+                   
+                   
+
+                    {"headerText": "Message", 
+                    "field": "message",
+                    "headerClassName": "oj-md-down-hide",
+                    "className": "oj-md-down-hide",
+                    "resizable": "enabled",
+                    "id": "message"}, 
+
+                    {"headerText": "Error", 
+                    "field": "error",
+                    "headerClassName": "oj-md-down-hide",
+                    "className": "oj-md-down-hide",
+                    "resizable": "enabled",
+                    "id": "Error"} 
+   ]'>
+
+
+        </oj-table>
+      </div>
+    
+  </oj-bind-if>
+  <oj-bind-if test="[[currentStepValue() === 'stp2']]">
+    <div class="oj-flex">
+      <div class="oj-flex-item pageTitle">
+        <i class="fa fa-snowflake-o filter" aria-hidden="true"></i> Transform Status
+      </div>
+      <div class="oj-flex-item txtRight">
+        <oj-button class="demo-button-blue" on-oj-action="[[refresh]]" chroming="solid">
+          <i class="fa fa-refresh"></i> 
+        </oj-button>
+      </div>
+    </div>   
+    <div class="oj-flex">       
+      <div id="validationComp" style="overflow: scroll;">
+        <oj-table id="validtable" aria-label="Lookup values table" style="max-height: calc(100vh - 230px);width:100%;"
+          selection-mode.row='single' dnd='{"reorder": {"columns": "enabled"}}' scroll-policy='loadMoreOnScroll'
+          scroll-policy-options='{"fetchSize": 50}'
+          data='[[ValidationdataProviders]]' columns='[
+                    {"headerText": "S.No.", 
+                    "field": "SNo",
+                    "headerClassName": "oj-sm-only-hide",
+                    "className": "oj-sm-only-hide",
+                    "resizable": "enabled",
+                    "id": "sno"},
+                   {"headerText": "Template Name", 
+                    "field": "templateName",
+                    "resizable": "enabled",
+                    "id": "templatname"},
+
+                    {"headerText": "Parent Object", 
+                    "field": "parentObjectCode",
+                    "headerClassName": "oj-md-down-hide",
+                    "className": "oj-md-down-hide",
+                    "resizable": "enabled",
+                    "id": "parentobject"},
+
+                   {"headerText": "Request Type", 
+                    "field": "requestType",
+                    "headerClassName": "oj-sm-only-hide",
+                    "className": "oj-sm-only-hide",
+                    "resizable": "enabled",
+                    "id": "reqtype"},
+                   
+                   {"headerText": "Status", 
+                    "field": "status",
+                    "headerClassName": "oj-md-down-hide",
+                    "className": "oj-md-down-hide",
+                    "resizable": "enabled",
+                    "id": "status",
+                     "template":"status"},
+
+                    {"headerText": "Total", 
+                    "field": "totalRecords",
+                    "headerClassName": "oj-md-down-hide",
+                    "className": "oj-md-down-hide",
+                    "resizable": "enabled",
+                    "id": "totrecords"},
+
+                    {"headerText": "Completed %", 
+                    "field": "percentage",
+                    "headerClassName": "oj-md-down-hide",
+                    "className": "oj-md-down-hide",
+                    "resizable": "enabled",
+                    "id": "percentage"},    
+
+                    {"headerText": "Processed", 
+                    "field": "successRec",
+                    "headerClassName": "oj-md-down-hide",
+                    "className": "oj-md-down-hide",
+                    "resizable": "enabled",
+                    "id": "successRec"}, 
+
+                    {"headerText": "Failed", 
+                    "field": "failRec",
+                    "headerClassName": "oj-md-down-hide",
+                    "className": "oj-md-down-hide",
+                    "resizable": "enabled",
+                    "id": "Failed"} ,
+
+                    {"headerText": "Start Date", 
+                    "field": "startDate",
+                    "headerClassName": "oj-md-down-hide",
+                    "className": "oj-md-down-hide",
+                    "resizable": "enabled",
+                    "id": "startDate"}, 
+
+                    {"headerText": "End Date", 
+                    "field": "endDate",
+                    "headerClassName": "oj-md-down-hide",
+                    "className": "oj-md-down-hide",
+                    "resizable": "endDate",
+                    "id": "endDate"} 
+             
+   ]'>
+          <template slot="completed" data-oj-as="cell">
+            <div style="margin-left: -6vw;">
+              <oj-status-meter-gauge class="circular-status-meter-small" min="0" max="100" value="[[cell.data]]"
+                labelled-by="indicatorThreshold" thresholds="[[thresholdValues]]" orientation="circular"
+                style="height: 30px;" readonly>
+              </oj-status-meter-gauge>
+            </div>
+          </template>
+          <template slot="TotalRecordsTemplate" data-oj-as="cell">
+            <oj-bind-if test='[[cell.data !== null]]'>
+              <oj-button chroming="borderless" id='totalcount' class="anchorbtn" on-oj-action='[[showTotalGridAction]]'
+                style="text-decoration: underline;">
+                <oj-bind-text value="[[cell.data]]">
+                </oj-bind-text>
+              </oj-button>
+            </oj-bind-if>
+
+          </template>
+          <template slot="ProcessedRecordsTemplate" data-oj-as="cell">
+            <oj-bind-if test='[[cell.data !== null]]'>
+              <oj-button chroming="borderless" id='processedcount' class="anchorbtn"
+                on-oj-action='[[showProcessedGridAction]]' style="text-decoration: underline;">
+                <oj-bind-text value="[[cell.data]]">
+                </oj-bind-text>
+              </oj-button>
+            </oj-bind-if>
+
+          </template>
+          <template slot="FailedRecordsTemplate" data-oj-as="cell">
+            <oj-bind-if test='[[cell.data !== null]]'>
+              <oj-button chroming="borderless" id='Failedcount' class="anchorbtn"
+                on-oj-action='[[showFailedGridAction]]' style="text-decoration: underline;">
+                <oj-bind-text value="[[cell.data]]">
+                </oj-bind-text>
+              </oj-button>
+            </oj-bind-if>
+          </template>
+          <template slot="status" data-oj-as="cell">
+            <div style="padding-left: 8px;">
+              <oj-bind-if test='[[cell.data=="C"]]'>
+                <span class="fa fa-check fa-lg" role="img" aria-label="error" style="color: Green;"></span>
+              </oj-bind-if>
+              <oj-bind-if test='[[cell.data=="I"]]'>
+                <span class="fa fa-exclamation-circle fa-lg" role="img" aria-label="error"
+                  style="color: #007acc;"></span>
+              </oj-bind-if>
+              <oj-bind-if test='[[cell.data=="CE"]]'>
+                <span class="fa fa-times fa-lg" role="img" aria-label="error" style="color: red;"></span>
+              </oj-bind-if>
+            </div>
+          </template>
+
+        </oj-table>
+
+      </div>
+    </div>
+  </oj-bind-if>
+
+
+  <oj-bind-if test="[[currentStepValue() === 'stp3']]">
+    <div class="oj-sm-flex-initial oj-flex-item" style="margin: 4px;" slot="header">
+      <b style="color:#007acc;font-weight:600;font-size:16px;position:relative;top:0px;">Cloud
+        Load Import Status</b>
+
+    </div>
+    <div class="oj-flex-item">
+      <div id="loadImporttableComp" style="overflow: scroll;">
+        <oj-table id="cloudtable" aria-label="Lookup values table" style="max-height: calc(100vh - 230px);width:100%;"
+          selection-mode.row='single' dnd='{"reorder": {"columns": "enabled"}}' scroll-policy='loadMoreOnScroll'
+           scroll-policy-options='{"fetchSize": 50}'
+          data='[[loadImportDataDtlsProviders]]' edit-mode='none' columns='[
+                    {"headerText": "S.No.", 
+                    "field": "SNo",
+                    "headerClassName": "oj-sm-only-hide",
+                    "className": "oj-sm-only-hide",
+                    "resizable": "enabled",
+                    "id": "sno"},
+                   {"headerText": "Template Name", 
+                    "field": "templateName",
+                    "resizable": "enabled",
+                    "id": "templatname"},                   
+                  
+
+                    {"headerText": "Message", 
+                    "field": "message",
+                    "headerClassName": "oj-md-down-hide",
+                    "className": "oj-md-down-hide",
+                    "resizable": "enabled",
+                    "id": "message"},    
+
+                    {"headerText": "Error", 
+                    "field": "error",
+                    "headerClassName": "oj-md-down-hide",
+                    "className": "oj-md-down-hide",
+                    "resizable": "enabled",
+                    "id": "error"}, 
+
+                    {"headerText": "Result Id", 
+                    "field": "resultId",
+                    "headerClassName": "oj-md-down-hide",
+                    "className": "oj-md-down-hide",
+                    "resizable": "enabled",
+                    "id": "result"} ,
+
+                    {"headerText": "Reconcile", 
+                    "field": "reconcile",
+                    "headerClassName": "oj-md-down-hide",
+                    "className": "oj-md-down-hide",
+                    "resizable": "enabled",
+                    "id": "reconcile"} 
+                                      
+           ]'>
+          <template slot="result" data-oj-as="cell">
+            <oj-button chroming="borderless" id='result' on-oj-action="[[downloadERPData]]" class="anchorbtn"
+              style="text-decoration: underline;">
+              <oj-bind-text value="[[cell.data]]">
+              </oj-bind-text>
+            </oj-button>
+          </template>
+          <template slot="reconcile" data-oj-as="cell">
+            <oj-button chroming="borderless" id='reconcile' on-oj-action="[[enableReconcileBtn]]" class="anchorbtn">
+              <span slot='startIcon' class="fa fa-handshake-o fa-lg"></span>
+            </oj-button>
+          </template>
+        </oj-table>
+      </div>
+    </div>
+  </oj-bind-if>
+</div>
+ 
+</div>

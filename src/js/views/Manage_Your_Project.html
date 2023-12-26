@@ -1,0 +1,320 @@
+<!--
+ Copyright (c) 2014, 2023, Oracle and/or its affiliates.
+ Licensed under The Universal Permissive License (UPL), Version 1.0
+ as shown at https://oss.oracle.com/licenses/upl/
+ -->
+ <div class="oj-hybrid-padding">
+    <oj-messages messages="[[messagesDataProvider]]" display="notification"
+        position="[[riteUTils.positions]]"></oj-messages>
+    <div id="srch">
+        <oj-dialog id="srchDailog" dialog-title="" aria-describedby="desc">
+            <div slot="header" class="txtRight">
+                <span on-click="[[closeSrchDailog]]">
+                    <i class="fa fa-times-circle-o" style="color:red;font-size:20px;"></i>
+                </span>
+            </div>
+            <div slot="body">
+                <oj-defer>
+                    <div class="oj-flex">
+                        <div class="oj-flex-item oj-md-8 mainPageTitle">Search Projects</div>
+                        <div class="oj-flex-item oj-md-4 txtRight">
+                            <oj-input-text style="width:15vw;margin:3px;" id="filter" value='{{srchfilter}}' autocomplete="off" on-raw-value-changed="[[searchanyvalueChanged]]">
+                                <div slot="start" class="oj-text-field-start-end-icon fa fa-search" role="img"></div>
+                            </oj-input-text>
+                        </div>
+                    </div>
+                    <div class="oj-flex oj-sm-12">
+                        <oj-table id="table" aria-label="src table" data="[[searchdataprovider]]" layout="fixed" on-selection-changed='{{selectionListener}}' selection-mode='{"row": "single"}'
+                            style="width:100%;height:350px;" scroll-policy="loadMoreOnScroll" columns='[                        
+                            {"headerText": "Project Name", 
+                             "field": "projectName",
+                             "resizable": "enabled",
+                             "id": "projectName"}, 
+
+                             {"headerText": "Project Code", 
+                             "field": "projectCode",
+                             "resizable": "enabled",
+                             "id": "projectCode"},
+
+                             {"headerText": "Description", 
+                             "field": "description",
+                             "resizable": "enabled",
+                             "id": "description"},
+
+                             {"headerText": "Project Manager", 
+                             "field": "projecManager",
+                             "resizable": "enabled",
+                             "id": "projecManager"},
+
+                             {"headerText": "Client Manager", 
+                             "field": "clientManager",
+                             "resizable": "enabled",
+                             "id": "clientManager"} ,
+                             {"headerText": "Start Date", 
+                             "field": "startDate",
+                             "resizable": "enabled",
+                             "id": "startDate",
+                            "template":"startDate"} ,
+                             {"headerText": "End Date", 
+                             "field": "endDate",
+                             "resizable": "enabled",
+                             "id": "endDate",
+                             "template":"endDate"} 
+                             ]' class="demo-table-container">
+                             <template slot="startDate" data-oj-as="cell">
+                                  <oj-bind-text value="[[dateConverter.format(cell.data)]]"></oj-bind-text>
+                              </template>
+                              <template slot="endDate" data-oj-as="cell">
+                                <oj-bind-text value="[[dateConverter.format(cell.data)]]"></oj-bind-text>
+                            </template>
+
+                      
+                            </oj-table>
+                    </div>
+                </oj-defer>
+            </div>
+        </oj-dialog>
+    </div>
+    <div class="oj-flex">
+        <div class="oj-flex-item oj-sm-4">
+            <span class="mainPageTitle">
+                <i class="fa fa-cogs filter" aria-hidden="true"></i> Manage Your Project</span>
+        </div>
+        <div class="oj-flex-item oj-sm-4">
+
+        </div>
+        <div class="oj-flex-item oj-sm-4 txtRight">
+            <span class="brdcrmbs"> ConvertRite > Manage Your Project </span>
+        </div>
+
+    </div>
+    <hr>
+    <div class="oj-flex">
+        <div class="oj-flex-item">
+            <div class="pageTitle"><i class="fa fa-snowflake-o filter" aria-hidden="true"></i> Project Header</div>
+        </div>
+        <div class="oj-flex-item txtRight">
+            <oj-button class="demo-button-blue" on-oj-action="[[showSrchDailog]]" chroming="solid">
+                <i class="fa fa-search"></i>
+            </oj-button>
+            <oj-button class="demo-button-blue" on-oj-action="[[resetProjects]]" chroming="solid">
+                <i class="fa fa-plus"></i>
+            </oj-button>
+        </div>
+    </div>
+    <hr>
+    <div class="oj-flex">
+
+        <div class="oj-flex-item oj-md-12">
+            <oj-validation-group id="tracker" valid="{{groupValid}}">
+                <oj-form-layout max-columns="5" label-edge="top" direction="row">
+
+                    <oj-bind-if test='[[projectId() === "0"]]'>
+                        <oj-select-single label-hint="[[riteUTils.riteLbl.projectName]]" data="[[projectNamedata]]"
+                             placeholder="Project Name" disabled="[[projectNameDisabled]]"
+                            on-value-changed="[[projectNameValueChange]]"
+                            value="{{projectName}}" required>
+                        </oj-select-single>
+                    </oj-bind-if>
+
+                    <oj-bind-if test='[[projectId() !== "0"]]'>
+                        <oj-input-text class="inputbox disable" disabled="true"  :class="[[projectId()!== '0'?'disable':'']]"
+                            label-hint="[[riteUTils.riteLbl.projectName]]" value="{{projectName}}"></oj-input-text>
+                    </oj-bind-if>
+
+                    <oj-input-text :class="[[projectId()!== '0'?'disable':'']]" value="{{description}}"
+                        placeholder="[[riteUTils.riteLbl.description]]"
+                        label-hint="[[riteUTils.riteLbl.description]]"></oj-input-text>
+
+                        <!-- <oj-bind-if test='[[projectId() === "0"]]'> -->
+                            <oj-select-single label-hint="[[riteUTils.riteLbl.projectManager]]" data="[[projectmanagerdata]]"
+                                :class="[[projectId()!== '0'?'disable':'']]" placeholder="[[riteUTils.riteLbl.projectManager]]"
+                                value="{{projectManager}}" required>
+                            </oj-select-single>
+                        <!-- </oj-bind-if> -->
+    
+                        <!-- <oj-bind-if test='[[projectId() !== "0"]]'>
+                            <oj-input-text class="inputbox disable" disabled="true"   :class="[[projectId()!== '0'?'disable':'']]"
+                                label-hint="[[riteUTils.riteLbl.projectManager]]" value="{{projectManager}}"></oj-input-text>
+                        </oj-bind-if> -->
+    
+                        <oj-input-date value='{{startdate}}' required  max="[[enddate]]"
+                            label-hint="[[riteUTils.riteLbl.startDate]]"  :class="[[projectId()!== '0'?'disable':'']]">
+                        </oj-input-date>
+                        <oj-input-date value='{{enddate}}'  min="[[startdate]]"  label-hint="[[riteUTils.riteLbl.endDate]]"  :class="[[projectId()!== '0'?'disable':'']]">
+                        </oj-input-date>
+
+
+                </oj-form-layout>
+            </oj-validation-group>
+        </div>
+
+
+    
+    </div>
+
+    <div class="oj-flex btnmargin">
+        <div class="oj-flex-item txtCenter">
+            <oj-button class="demo-button-blue"  chroming="solid" on-oj-action="[[importProjects]]" disabled="[[importBtnDisabled]]">
+                <i class="fa fa-download"></i> Import
+            </oj-button>
+            <oj-bind-if test="[[btnLbl()=='Save']]">
+                <oj-button class="demo-button-blue" on-oj-action="[[saveImportProjects]]" chroming="solid">
+                  <i class="fa fa-save"></i> Save
+                </oj-button>
+              </oj-bind-if>
+              <oj-bind-if test="[[btnLbl()=='Update']]">
+                <oj-button class="demo-button-blue" on-oj-action="[[saveImportProjects]]" chroming="solid">
+                  <i class="fa fa-save"></i> Update
+                </oj-button>
+              </oj-bind-if>
+      
+        </div>
+    </div>
+    <div class="oj-flex" style="margin-top:10px;">
+        <div class="oj-flex-item">
+            <div class="pageTitle"><i class="fa fa-snowflake-o filter" aria-hidden="true"></i> Activity</div>
+        </div>
+        <div class="oj-flex-item txtRight">
+        </div>
+    </div>
+    <div class="oj-flex">
+        <div class="oj-flex-item">
+            <div id="componentDemoContent" style="width: 1px; min-width: 100%;overflow: auto;">
+                <oj-table id="projectstable" aria-label="projectstable" data="[[dataprovider]]" edit-mode='rowEdit'
+                edit-row='{{editRow}}' style="width:100%;height: auto;max-height:300px;" scroll-position="{{scrollPos}}"  scroll-policy="loadMoreOnScroll" on-oj-before-row-edit='[[beforeRowEditListener]]'
+                on-oj-before-row-edit-end='[[beforeRowEditEndListener]]' scroll-policy-options='{"fetchSize": 20}'
+                columns='[
+                    {"field": "rowId",
+                    "headerText": "S.No.",                   
+                    "headerClassName": "oj-helper-text-align-left",    
+                    "minWidth": "5rem",                
+                    "className": "oj-helper-text-align-left","resizable": "enabled",
+                    "template": "numberTemplate"},
+                    
+                   {"field": "taskName",
+                    "headerText": "Task Name",                   
+                    "headerClassName": "oj-helper-justify-content-center", 
+                    "minWidth": "12rem",     
+                    "frozenEdge": "start",    
+                    "template": "taskName"},
+                    
+                   {"field":"objectId",
+                   "headerText": "Object Code",
+                   "headerClassName": "oj-helper-text-align-center",
+                   "minWidth": "10rem",       
+                   "frozenEdge": "start",               
+                   "template": "objectCode"},
+              
+                   {"field":"taskType",
+                   "headerText": "Task Type",
+                   "headerClassName": "oj-helper-text-align-center",                 
+                   "className": "oj-helper-text-align-left",
+                   "minWidth": "10rem",   
+                   "frozenEdge": "start",                             
+                   "template": "taskType"},
+              
+                   {"field":"taskStatus",
+                   "headerText": "Task Status",                 
+                   "headerClassName": "oj-helper-justify-content-center",                   
+                   "className": "oj-helper-text-align-left",
+                   "minWidth": "10rem", 
+                   "template": "taskStatus"},
+
+              
+                   {"field":"startDate",
+                   "headerText": "Start Date",
+                   "headerClassName": "oj-helper-justify-content-center",                  
+                   "className": "oj-helper-text-align-left",
+                   "minWidth": "10rem", 
+                   "frozenEdge": "start",           
+                   "template": "startDate"},
+              
+                    {"field":"endDate",
+                   "headerText": "End Date",
+                   "headerClassName": "oj-helper-justify-content-center",  
+                   "minWidth": "10rem",
+                   "frozenEdge": "start",           
+                   "template": "endDate"}
+                   
+
+                    ]'>
+
+                    <template slot="numberTemplate" data-oj-as="cell">
+                        <oj-bind-text value="[[numberConverter.format(cell.data)]]"></oj-bind-text>
+                        </template>
+
+                    <template slot="startDate" data-oj-as="cell">
+                        <oj-bind-if test='[[cell.mode=="navigation"]]'>
+                          <oj-bind-text value="[[dateConverter.format(cell.data)]]"></oj-bind-text>
+                        </oj-bind-if>
+                        <oj-bind-if test='[[cell.mode=="edit"]]'>
+                            <oj-input-date value='{{rowData.startDate}}' class="editable"></oj-input-date>
+                        </oj-bind-if>
+                      </template>
+              
+                      <template slot="endDate" data-oj-as="cell">
+                        <oj-bind-if test='[[cell.mode=="navigation"]]'>
+                          <oj-bind-text value="[[dateConverter.format(cell.data)]]"></oj-bind-text>
+                        </oj-bind-if>
+                        <oj-bind-if test='[[cell.mode=="edit"]]'>
+                            <oj-input-date value='{{rowData.endDate}}' class="editable"></oj-input-date>
+                        </oj-bind-if>
+                      </template>
+
+                      <template slot="taskName" data-oj-as="cell">
+                        <oj-bind-if test='[[cell.mode=="navigation"]]'>
+                            <oj-bind-text value="[[cell.data]]"></oj-bind-text>
+                        </oj-bind-if>
+                        <!-- <oj-bind-if test='[[cell.mode=="edit"]]'>
+                            <oj-select-single id="ss1" value='{{rowData.taskName}}' data='[[taskNamedata]]'
+                                class="editable">
+                            </oj-select-single>
+                        </oj-bind-if> -->
+                    </template>
+
+                    <template slot="objectCode" data-oj-as="cell">
+                        <oj-bind-if test='[[cell.mode=="navigation"]]'>
+                            <oj-bind-text value="[[cell.data]]"></oj-bind-text>
+                        </oj-bind-if>
+                        <oj-bind-if test='[[cell.mode=="edit"]]'>
+                            <oj-select-single id="ss1" value='{{rowData.objectCode}}' data='[[objectCodeData]]'
+                                class="editable">
+                            </oj-select-single>
+                        </oj-bind-if>
+                    </template>
+
+                    <template slot="taskType" data-oj-as="cell">
+                        <oj-bind-if test='[[cell.mode=="navigation"]]'>
+                            <oj-bind-text value="[[cell.data]]"></oj-bind-text>
+                        </oj-bind-if>
+                        <oj-bind-if test='[[cell.mode=="edit"]]'>
+                            <oj-select-single id="ss1" value='{{rowData.taskType}}' data='[[tskTypeData]]'
+                                class="editable">
+                            </oj-select-single>
+                        </oj-bind-if>
+                    </template>
+
+                    <template slot="taskStatus" data-oj-as="cell">
+                        <oj-bind-if test='[[cell.mode=="navigation"]]'>
+                            <oj-bind-text value="[[cell.data]]"></oj-bind-text>
+                        </oj-bind-if>
+                        <oj-bind-if test='[[cell.mode=="edit"]]'>
+                            <oj-select-single id="ss1" value='{{rowData.taskStatus}}' data='[[taskstatusData]]'
+                                class="editable">
+                            </oj-select-single>
+                        </oj-bind-if>
+                    </template>
+                    
+                      
+                </oj-table>
+                <div class="txtCenter">
+                    <div><i class="fa fa-angle-down" style="color:black" aria-hidden="true"></i></div>
+                    <div class="head31" on-click="[[loadMore]]">Load More</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+  
+</div>

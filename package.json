@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "An Oracle JavaScript Extension Toolkit(JET) web app",
   "dependencies": {
-    "@oracle/oraclejet": "~14.1.0",
-    "@oracle/oraclejet-core-pack": "~14.1.0",
+    "@oracle/oraclejet": "~16.0.10",
+    "@oracle/oraclejet-core-pack": "~16.0.10",
     "axios": "^1.4.0"
   },
   "devDependencies": {
